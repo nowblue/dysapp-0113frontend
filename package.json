@@ -1,0 +1,19 @@
+{
+  "name": "dysapp-monorepo",
+  "version": "1.0.0",
+  "description": "Dysapp Monorepo - AI Design Analysis Platform",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "cd packages/frontend && echo 'Use VS Code Live Server extension to serve this directory'",
+    "dev:backend": "cd packages/backend && npm run serve",
+    "build:frontend": "cd packages/frontend && echo 'No build step needed'",
+    "build:backend": "cd packages/backend && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Siegfriex/dysapp.git"
+  }
+}

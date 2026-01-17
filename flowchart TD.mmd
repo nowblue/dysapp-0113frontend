@@ -1,0 +1,119 @@
+flowchart TD
+    start([사용자 앱 진입]) --> init_app[앱 초기화]
+    
+    subgraph auth [인증 프로세스]
+        direction TB
+        init_app --> check_auth{인증 상태 확인}
+        check_auth -->|인증됨| auth_success[인증 완료]
+        check_auth -->|미인증| signin_anon[익명 인증 시도]
+        signin_anon --> signin_result{인증 성공?}
+        signin_result -->|Yes| auth_success
+        signin_result -->|No| auth_error[인증 오류]
+        auth_error --> show_auth_error[오류 메시지 표시]
+    end
+    
+    auth_success --> page_select{페이지 선택}
+    
+    subgraph upload_page [업로드 페이지]
+        direction TB
+        page_select -->|업로드| upload_file[파일 선택]
+        upload_file --> validate_file{파일 검증}
+        validate_file -->|유효| show_preview[미리보기 표시]
+        validate_file -->|무효| file_error[파일 오류]
+        file_error -.->|재시도| upload_file
+        
+        show_preview --> optional_prompt{프롬프트 입력?}
+        optional_prompt -->|있음| with_prompt[프롬프트 포함]
+        optional_prompt -->|없음| no_prompt[프롬프트 없음]
+        
+        with_prompt --> send_analysis[분석 요청 전송]
+        no_prompt --> send_analysis
+        
+        send_analysis --> loading_analysis[로딩 표시]
+        loading_analysis --> call_api[analyzeDesign API 호출]
+    end
+    
+    subgraph backend_analysis [백엔드 분석]
+        direction TB
+        call_api --> backend_auth{인증 확인}
+        backend_auth -->|인증됨| rate_check{Rate Limit 체크}
+        backend_auth -->|미인증| backend_auth_error[인증 오류]
+        
+        rate_check -->|통과| validate_backend[입력 검증]
+        rate_check -->|초과| rate_error[Rate Limit 오류]
+        
+        validate_backend -->|유효| upload_storage[Storage 업로드]
+        validate_backend -->|무효| validation_error[검증 오류]
+        
+        upload_storage --> vision_api[Gemini Vision API]
+        vision_api --> vision_result{Vision 결과}
+        
+        vision_result -->|성공| validate_llm{LLM 응답 검증}
+        vision_result -->|실패| vision_error[Vision API 오류]
+        
+        validate_llm -->|유효| generate_embed[Embedding 생성]
+        validate_llm -->|무효| llm_error[LLM 응답 오류]
+        
+        generate_embed --> save_db[Firestore 저장]
+        save_db --> save_result{저장 성공?}
+        
+        save_result -->|성공| return_success[성공 응답]
+        save_result -->|실패| db_error[Firestore 오류]
+    end
+    
+    return_success --> store_analysis_id[analysisId 저장]
+    store_analysis_id --> navigate_analyze[analyze.html로 이동]
+    
+    backend_auth_error --> api_error[API 오류 처리]
+    rate_error --> api_error
+    validation_error --> api_error
+    vision_error --> api_error
+    llm_error --> api_error
+    db_error --> api_error
+    
+    api_error --> retry_decision{재시도?}
+    retry_decision -->|Yes| send_analysis
+    retry_decision -->|No| show_error[에러 메시지 표시]
+    
+    subgraph analyze_page [분석 페이지]
+        direction TB
+        navigate_analyze --> load_analysis[분석 데이터 로드]
+        load_analysis --> load_result{로드 성공?}
+        
+        load_result -->|성공| render_results[결과 렌더링]
+        load_result -->|실패| load_error[로드 오류]
+        load_error -.->|재시도| load_analysis
+        
+        render_results --> show_analysis[분석 결과 표시]
+        show_analysis --> chat_available[AI 챗 가능]
+    end
+    
+    show_error --> end_error([오류 종료])
+    chat_available --> end_success([성공 종료])
+    
+    style start fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style end_success fill:#c8e6c9,stroke:#388e3c,stroke-width:3px
+    style end_error fill:#ffebee,stroke:#ef4444,stroke-width:3px
+    
+    style check_auth fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style signin_result fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style validate_file fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style optional_prompt fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style backend_auth fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style rate_check fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style vision_result fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style validate_llm fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style save_result fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style load_result fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style retry_decision fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    
+    style auth_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style file_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style backend_auth_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style rate_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style validation_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style vision_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style llm_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style db_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style api_error fill:#ffebee,stroke:#ef4444,stroke-width:2px
+    style load_error fill:#ffebee,stroke:#ef4444,stroke-width:2px

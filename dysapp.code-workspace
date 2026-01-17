@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "path": "packages/frontend",
+      "name": "Frontend"
+    },
+    {
+      "path": "packages/backend",
+      "name": "Backend"
+    },
+    {
+      "path": ".",
+      "name": "Root"
+    }
+  ],
+  "settings": {
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.root": "/packages/frontend"
+  },
+  "extensions": {
+    "recommendations": [
+      "ritwickdey.liveserver"
+    ]
+  }
+}
