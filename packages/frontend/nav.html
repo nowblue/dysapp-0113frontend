@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- =========================================
+     컴포넌트: 네비게이션 사이드바 (nav.html)
+     ========================================= 
+     목적: 모든 페이지에서 공통으로 사용되는 사이드바 네비게이션
+     
+     사용 방법:
+     - 다른 HTML 파일에서 <nav data-include-path="nav.html"></nav>로 포함
+     - includHTML.js가 자동으로 이 파일의 내용을 삽입
+     
+     구조:
+     1. 로고 영역: 메인 페이지로 이동
+     2. 메인 네비게이션: 주요 페이지 링크
+     3. 하단 네비게이션: 구독 및 설정 링크
+     
+     스타일:
+     - common.css의 .sidebar, .nav_ul 클래스 사용
+     - 인라인 스타일로 아이콘 크기 조정 (vw 단위 사용)
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네비게이션</title>
+    <link rel="stylesheet" href="./common.css">
+    <style>
+        /* 리셋 스타일: 기본 마진/패딩 제거 */
+        * {
+            margin: 0;
+            padding: 0;
+        }   
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- 사이드바 네비게이션 컨테이너 -->
+        <nav class="sidebar" role="navigation" aria-label="메인 네비게이션">
+            
+            <!-- =========================================
+                 로고 영역
+                 ========================================= 
+                 기능: 클릭 시 메인 페이지(index.html)로 이동
+            -->
+            <ul class="nav_ul logo_ul">
+                <li>
+                    <a href="./index.html" aria-label="홈으로 이동">
+                        <img src="./img/logo.svg" alt="Dys 로고" style="width: 1.9vw;">
+                    </a>
+                </li>
+            </ul>
+
+            <!-- =========================================
+                 메인 네비게이션 탭
+                 ========================================= 
+                 주요 페이지로 이동하는 네비게이션 링크들
+            -->
+            <ul class="nav_ul nav_tab">
+                <!-- 업로드 페이지: 이미지 업로드 및 분석 시작 -->
+                <li>
+                    <a href="./index.html" aria-label="업로드 페이지">
+                        <img src="./img/uploadTab.svg" style="width: 1.2vw;" alt="업로드">
+                    </a>
+                </li>
+                
+                <!-- 검색 페이지: 이미지 및 텍스트 검색 -->
+                <li>
+                    <a href="./searchTab.html" aria-label="검색 페이지">
+                        <img src="./img/searchTab.svg" style="width: 1.4vw;" alt="검색">
+                    </a>
+                </li>
+                
+                <!-- 마이페이지: 사용자 프로필 및 분석 히스토리 -->
+                <li>
+                    <a href="./mypage.html" aria-label="마이페이지">
+                        <img src="./img/mypage.svg" style="width: 1.3vw;" alt="마이페이지">
+                    </a>
+                </li>
+            </ul>
+
+            <!-- =========================================
+                 하단 네비게이션 (구독 및 설정)
+                 ========================================= 
+                 부가 기능 페이지로 이동하는 링크들
+            -->
+            <div class="nav_ul nav_tab nav_ul3">
+                <!-- 구독 페이지: 구독 플랜 선택 및 결제 -->
+                <a href="./subscribe.html" class="nav-link" aria-label="구독 페이지">
+                    <img src="./img/suscribeTab.svg" style="width: 0.8vw;" alt="구독">
+                </a>
+                
+                <!-- 로그인 버튼: 인증되지 않은 사용자에게만 표시 -->
+                <button id="navLoginBtn" class="nav-link nav-login-btn" aria-label="로그인" style="display: none;">
+                    <svg style="width: 1.3vw; height: 1.3vw;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                </button>
+                
+                <!-- 설정 페이지: 사용자 환경 설정 -->
+                <a href="./settings.html" class="nav-link" aria-label="설정 페이지">
+                    <img src="./img/setting.svg" style="width: 1.3vw;" alt="설정">
+                </a>
+            </div>
+            
+            <script type="module">
+                // 로그인 버튼 표시/숨김 처리
+                async function updateNavLoginButton() {
+                    const loginBtn = document.getElementById('navLoginBtn');
+                    if (!loginBtn) return;
+                    
+                    try {
+                        // app.js가 초기화될 때까지 대기
+                        if (!window.dysapp?.initialized) {
+                            window.addEventListener('dysapp:ready', updateNavLoginButton, { once: true });
+                            return;
+                        }
+                        
+                        const user = window.dysapp?.user;
+                        const isAuthenticated = user && !user.isAnonymous;
+                        
+                        // 인증되지 않은 사용자에게만 로그인 버튼 표시
+                        if (isAuthenticated) {
+                            loginBtn.style.display = 'none';
+                        } else {
+                            loginBtn.style.display = 'flex';
+                        }
+                    } catch (error) {
+                        console.error('[Nav] Error updating login button:', error);
+                    }
+                }
+                
+                // 인증 상태 변경 시 업데이트
+                window.addEventListener('dysapp:authChanged', updateNavLoginButton);
+                
+                // 초기 로드 시 업데이트
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', updateNavLoginButton);
+                } else {
+                    updateNavLoginButton();
+                }
+                
+                // 로그인 버튼 클릭 이벤트
+                document.getElementById('navLoginBtn')?.addEventListener('click', async () => {
+                    const { showAuthModal } = await import('./scripts/auth.js');
+                    showAuthModal('login');
+                });
+            </script>
+        </nav>
+    </div>
+</body>
+
+</html>

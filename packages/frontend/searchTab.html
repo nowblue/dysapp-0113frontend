@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- =========================================
+     페이지: 검색 페이지 (searchTab.html)
+     ========================================= 
+     목적: 이미지 및 텍스트 기반 디자인 검색
+     
+     주요 기능:
+     - 텍스트 검색: OCR 텍스트로 디자인 검색
+     - 이미지 검색: 이미지 업로드 후 유사 디자인 검색
+     - 카테고리별 검색: 나의 스타일, 나의 레퍼런스, 추가 인사이트
+     - 필터링: 포맷, 점수 등으로 검색 결과 필터링
+     
+     관련 스크립트:
+     - scripts/app.js: 앱 초기화 및 공통 기능
+     - scripts/search.js: 검색 로직 및 결과 렌더링
+     
+     검색 타입:
+     1. 나의 스타일: 사용자가 분석한 디자인 중 유사한 것 검색
+     2. 나의 레퍼런스: 저장한 북마크 중 검색
+     3. 추가 인사이트: 외부 커스텀 검색 (Google Custom Search API)
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 - Dys</title>
+    
+    <!-- 전역 스타일시트 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티 -->
+    <script src="./includHTML.js" defer></script>
+    
+    <!-- 앱 초기화 -->
+    <script type="module" src="./scripts/app.js"></script>
+    
+    <!-- 검색 페이지 로직: 검색 처리 및 결과 렌더링 -->
+    <script type="module" src="./scripts/search.js"></script>
+</head>
+
+<body>
+    <div class="wrap">
+        <!-- 네비게이션 바 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="search_main">
+            
+            <!-- =========================================
+                 검색 입력 영역
+                 ========================================= 
+                 텍스트 검색 또는 이미지 업로드 검색을 위한 입력 영역
+            -->
+            <section class="search_box">
+                <!-- 텍스트 검색 입력: OCR 텍스트로 검색 -->
+                <textarea name="text" class="search" placeholder="검색할 텍스트를 입력해주세요." aria-label="검색어 입력"></textarea>
+                
+                <!-- 이미지 업로드 버튼: 이미지로 유사 디자인 검색 -->
+                <button type="submit" class="uploadIcon" aria-label="이미지 업로드 검색">
+                    <img src="./img/upload.svg" alt="업로드">
+                </button>
+                
+                <!-- 텍스트 검색 버튼: 입력한 텍스트로 검색 실행 -->
+                <button type="submit" class="searchIcon" aria-label="검색 실행">
+                    <img src="./img/search.svg" alt="검색">
+                </button>
+            </section>
+            
+            <!-- =========================================
+                 검색 결과 영역
+                 ========================================= 
+                 검색 결과를 카테고리별로 표시하는 영역
+            -->
+            <section class="searchfile1">
+                
+                <!-- 카테고리 탭: 검색 범위 선택 -->
+                <div class="category">
+                    <!-- 나의 스타일: 사용자가 분석한 디자인 중 검색 -->
+                    <button class="filenameBox" data-category="my-style" aria-label="나의 스타일 검색">
+                        <p class="filename">나의 스타일</p>
+                        <span class="nothing"></span>
+                    </button>
+                    
+                    <!-- 나의 레퍼런스: 저장한 북마크 중 검색 -->
+                    <button class="filenameBox" data-category="my-reference" aria-label="나의 레퍼런스 검색">
+                        <p class="filename">나의 레퍼런스</p>
+                        <span class="nothing"></span>
+                    </button>
+                    
+                    <!-- 추가 인사이트: 외부 커스텀 검색 -->
+                    <button class="filenameBox" data-category="insights" aria-label="추가 인사이트 검색">
+                        <p class="filename">추가 인사이트</p>
+                        <span class="nothing"></span>
+                    </button>
+                </div>
+                
+                <!-- 필터 버튼: 검색 필터 설정 페이지로 이동 -->
+                <button class="filter" onclick="location.href='filter.html'" aria-label="검색 필터 설정">
+                    <img src="./img/filter.svg" alt="필터" class="filterIcon">
+                </button>
+                
+                <!-- 검색 결과 그리드: 검색된 이미지들이 그리드 형태로 표시됨 -->
+                <div class="fileBox">
+                    <div class="searchImgBox">
+                        <!-- 동적으로 검색 결과가 렌더링됩니다 (search.js의 renderSearchResults 함수) -->
+                        <!-- 페이지 딤: 이미지 호버 시 배경 어둡게 처리 -->
+                        <div class="page-dim"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 검색 결과 상세 모달 -->
+    <div class="search_result_modal_bg" id="searchResultModalBg">
+        <div class="search_result_modal_box" id="searchResultModalBox">
+            <button class="search_modal_closeBtn" id="searchModalCloseBtn">
+                <img src="./img/close_btn.svg" alt="닫기">
+            </button>
+            <div class="search_modal_content">
+                <div class="search_modal_image">
+                    <img id="searchModalImage" src="" alt="">
+                </div>
+                <div class="search_modal_info">
+                    <h2 class="search_modal_title" id="searchModalTitle"></h2>
+                    <div class="search_modal_meta">
+                        <span class="search_modal_similarity" id="searchModalSimilarity"></span>
+                        <span class="search_modal_score" id="searchModalScore"></span>
+                    </div>
+                    <div class="search_modal_ocr" id="searchModalOcr">
+                        <p class="search_modal_ocr_label">인식된 텍스트</p>
+                        <p class="search_modal_ocr_text" id="searchModalOcrText"></p>
+                    </div>
+                    <div class="search_modal_recommendation" id="searchModalRecommendation" style="display: none;">
+                        <p class="search_modal_recommendation_label">추천 이유</p>
+                        <p class="search_modal_recommendation_text" id="searchModalRecommendationText"></p>
+                    </div>
+                    <div class="search_modal_actions">
+                        <button class="search_modal_action_btn save_btn" id="searchModalSaveBtn">
+                            <img src="./img/star.svg" alt=""> 저장
+                        </button>
+                        <button class="search_modal_action_btn share_btn" id="searchModalShareBtn">
+                            <img src="./img/share.svg" alt=""> 공유
+                        </button>
+                        <button class="search_modal_action_btn download_btn" id="searchModalDownloadBtn">
+                            <img src="./img/download.svg" alt=""> 다운로드
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

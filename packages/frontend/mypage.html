@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- =========================================
+     페이지: 마이페이지 (mypage.html)
+     ========================================= 
+     목적: 사용자 프로필 및 분석 히스토리 관리
+     
+     주요 기능:
+     - 사용자 프로필 정보 표시 및 수정
+     - 분석 히스토리 목록 (Bento Grid 레이아웃)
+     - 스타일 갤러리 (카테고리별 필터링)
+     - 분석 삭제 기능
+     
+     관련 스크립트:
+     - scripts/app.js: 앱 초기화 및 공통 기능
+     - scripts/mypage.js: 프로필 로드, 분석 목록 렌더링, 갤러리 필터링
+     
+     레이아웃:
+     - 좌측: 프로필 정보 + 주 포스터 (Bento Grid)
+     - 우측: 스타일 갤러리 (카테고리별 탭)
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - Dys</title>
+    
+    <!-- 전역 스타일시트 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티 -->
+    <script src="./includHTML.js" defer></script>
+    
+    <!-- 앱 초기화 -->
+    <script type="module" src="./scripts/app.js"></script>
+    
+    <!-- 마이페이지 로직: 프로필 및 분석 목록 관리 -->
+    <script type="module" src="./scripts/mypage.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <!-- 네비게이션 바 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="mypage_main">
+            
+            <!-- 페이지 헤더: 제목 및 설명 -->
+            <div class="mypage-header">
+                <h1 class="mypage-title">마이페이지</h1>
+                <p class="mypage-subtitle">나의 디자인 분석 히스토리와 프로필을 관리하세요</p>
+            </div>
+
+            <!-- =========================================
+                 2단 레이아웃 컨테이너
+                 ========================================= 
+                 좌우 2단 구조로 정보를 효율적으로 배치
+            -->
+            <div class="mypage-layout">
+                
+                <!-- =========================================
+                     좌측 컬럼: 프로필 및 주 포스터
+                     ========================================= 
+                     사용자 프로필 정보와 주요 분석 결과를 표시
+                -->
+                <aside class="left-column">
+                    
+                    <!-- 프로필 섹션: 사용자 정보 (동적으로 렌더링됨) -->
+                    <!-- mypage.js의 renderProfile() 함수가 내용 생성 -->
+                    <section class="profile-section"></section>
+
+                    <!-- 주 포스터 섹션: 주요 분석 결과를 Bento Grid 형태로 표시 -->
+                    <!-- mypage.js의 renderBentoGrid() 함수가 내용 생성 -->
+                    <section class="portfolio-section">
+                        <div class="portfolio-titwrap">
+                            <img src="./img/pin.svg" alt="" class="portfolio-fixpin">
+                            <h3 class="portfolio-title">주 그래픽 포스터</h3>
+                            <button class="portfolio-edit"><img src="./img/edit.svg" alt="" class="portfolio-editimg"></button>
+                        </div>
+                        <div class="bento-grid"></div>
+                    </section>
+                </aside>
+
+                <!-- =========================================
+                     우측 컬럼: 스타일 갤러리
+                     ========================================= 
+                     분석 히스토리를 카테고리별로 필터링하여 표시
+                -->
+                <div class="right-column">
+                    
+                    <!-- 스타일 갤러리 섹션 -->
+                    <section class="style-gallery-section">
+                        <!-- 갤러리 헤더: 제목 및 카테고리 탭 -->
+                        <div class="gallery-header">
+                            <h3 class="gallery-title">스타일 갤러리</h3>
+                            
+                            <!-- 카테고리 탭: 필터링 옵션 -->
+                            <div class="gallery-tabs">
+                                <button class="gallery-tab active" data-tab="all" aria-label="전체 보기">전체</button>
+                                <button class="gallery-tab" data-tab="typo" aria-label="타이포그래피 필터">타이포</button>
+                                <button class="gallery-tab" data-tab="composition" aria-label="컴포지션 필터">컴퍼지션</button>
+                                <button class="gallery-tab" data-tab="effect" aria-label="이펙트 필터">이펙트</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 갤러리 그리드: 분석 결과 이미지들이 그리드 형태로 표시됨 -->
+                        <!-- mypage.js의 renderGallery() 함수가 내용 생성 -->
+                        <div class="gallery-grid"></div>
+                        
+                        <!-- 더 보기 버튼: 페이지네이션 (필요 시에만 표시) -->
+                        <button class="load-more-btn" style="display: none;" aria-label="더 많은 결과 보기">더 보기</button>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

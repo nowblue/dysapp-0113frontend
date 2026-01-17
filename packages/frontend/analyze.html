@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- =========================================
+     페이지: 분석 결과 페이지 (analyze.html)
+     ========================================= 
+     목적: 업로드된 디자인 이미지의 상세 분석 결과를 표시
+     
+     주요 기능:
+     - 디자인 분석 결과 시각화 (색상, 레이아웃, 타이포그래피 등)
+     - AI 멘토 채팅 (분석 결과에 대한 질문 및 답변)
+     - 상세 분석 모달 (각 분석 카테고리별 상세 정보)
+     
+     관련 스크립트:
+     - scripts/app.js: 앱 초기화 및 공통 기능
+     - scripts/analyze.js: 분석 결과 로드 및 렌더링, 채팅 기능
+     
+     데이터 흐름:
+     1. URL 파라미터 또는 localStorage에서 analysisId 가져오기
+     2. getAnalysis API 호출하여 분석 결과 로드
+     3. analyze.js의 renderAnalysisResults()로 결과 렌더링
+     4. 사용자가 채팅 입력 시 chatWithMentor API 호출
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분석 결과 - Dys</title>
+    
+    <!-- 전역 스타일시트 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티 -->
+    <script src="./includHTML.js" defer></script>
+    
+    <!-- 앱 초기화 -->
+    <script type="module" src="./scripts/app.js"></script>
+    
+    <!-- 분석 페이지 로직: 결과 로드 및 채팅 처리 -->
+    <script type="module" src="./scripts/analyze.js"></script>
+</head>
+
+<body>
+    <div class="wrap">
+        <!-- 네비게이션 바: nav.html이 자동 삽입됨 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="Report_main">
+            
+            <!-- =========================================
+                 분석 결과 섹션
+                 ========================================= 
+                 분석된 디자인의 종합 정보를 표시하는 영역
+                 analyze.js의 renderAnalysisResults() 함수가 동적으로 내용 생성
+            -->
+            <section class="Report" id="analysisReport" role="main" aria-label="디자인 분석 결과">
+                
+                <!-- 메인 제목: 분석된 디자인의 포맷 및 점수 표시 -->
+                <h1 class="H1Text" id="mainDescription">분석 결과를 불러오는 중...</h1>
+                
+                <!-- 분석 키워드 태그: 감지된 키워드들이 태그 형태로 표시됨 -->
+                <div class="main_percent" id="mainTags" role="list" aria-label="분석 키워드">
+                    <!-- 동적으로 키워드 태그가 삽입됩니다 -->
+                </div>
+                
+                <!-- =========================================
+                     종합 분석 섹션
+                     ========================================= 
+                     전체적인 디자인 분석 요약을 텍스트로 표시
+                     초기 상태: display:none (데이터 로드 후 표시)
+                -->
+                <div class="overall-analysis-section" id="overallAnalysisSection" style="display: none;">
+                    <div class="overall-analysis-box">
+                        <h3 class="overall-analysis-title">종합 분석</h3>
+                        <p class="overall-analysis-text" id="overallAnalysisText"></p>
+                    </div>
+                </div>
+
+                <!-- =========================================
+                     분석 데이터 박스 컨테이너
+                     ========================================= 
+                     각 분석 카테고리별 상세 정보를 카드 형태로 표시
+                     클릭 시 상세 분석 모달이 열림
+                -->
+                <div class="dataBox_wrap" id="dataBoxContainer" role="region" aria-label="분석 데이터">
+                    <div class="dataBox" data-category="colorPalette" role="button" tabindex="0" aria-label="색상 팔레트 분석 결과, 클릭하여 상세 정보 보기">
+                        <h3 class="H3Text">색상 팔레트</h3>
+                        <div class="dataElement" id="colorPaletteContent" aria-live="polite">
+                            <!-- Dynamic color palette -->
+                        </div>
+                        <p class="describtion" id="colorPaletteDesc"></p>
+                    </div>
+
+                    <div class="dataBox" data-category="detectedObjects" role="button" tabindex="0" aria-label="감지된 객체 분석 결과, 클릭하여 상세 정보 보기">
+                        <h3 class="H3Text">감지된 객체</h3>
+                        <div class="dataElement" id="detectedObjectsContent" aria-live="polite">
+                            <!-- Dynamic detected objects -->
+                        </div>
+                        <p class="describtion" id="detectedObjectsDesc"></p>
+                    </div>
+
+                    <div class="dataBox" data-category="usageSuggestions" role="button" tabindex="0" aria-label="활용 제안 분석 결과, 클릭하여 상세 정보 보기">
+                        <h3 class="H3Text">활용 제안</h3>
+                        <ul class="dataElement utilizeBox" id="usageSuggestionsContent" aria-live="polite">
+                            <!-- Dynamic usage suggestions -->
+                        </ul>
+                        <p class="describtion" id="usageSuggestionsDesc"></p>
+                    </div>
+
+                    <div class="dataBox" data-category="layout" role="button" tabindex="0" aria-label="레이아웃 분석 결과, 클릭하여 상세 정보 보기">
+                        <h3 class="H3Text">레이아웃</h3>
+                        <div class="dataElement layoutBox" id="layoutContent" aria-live="polite">
+                            <!-- Dynamic layout metrics -->
+                        </div>
+                        <p class="describtion" id="layoutDesc"></p>
+                    </div>
+
+                    <div class="dataBox" data-category="typography" role="button" tabindex="0" aria-label="타이포그래피 분석 결과, 클릭하여 상세 정보 보기">
+                        <h3 class="H3Text">타이포그래피</h3>
+                        <div class="dataElement typoData" id="typographyContent" aria-live="polite">
+                            <!-- Dynamic typography data -->
+                        </div>
+                        <p class="describtion" id="typographyDesc"></p>
+                    </div>
+
+                    <div class="dataBox langData" data-category="language" role="button" tabindex="0" aria-label="인식된 텍스트 분석 결과, 클릭하여 상세 정보 보기">
+                        <h3 class="H3Text">사용 언어</h3>
+                        <h3 class="H3Text">인식된 텍스트</h3>
+                        <div class="dataElement" id="languageContent" aria-live="polite">
+                            <!-- Dynamic language/text data -->
+                        </div>
+                        <p class="describtion" id="languageDesc"></p>
+                    </div>
+
+                    <div class="aiSuggestion" id="aiSuggestionBox">
+                        <!-- <span><img class="star" src="./img/star.svg" alt=""></span> -->
+                        <p class="H2Text">AI 추천</p>
+                        <p class="aiDescribtion" id="aiRecommendation"></p>
+                    </div>
+                </div>
+            </section>
+            <section class="add_prompt" id="chatSection" role="region" aria-label="AI 멘토 채팅">
+                <div class="chat-container" id="chatContainer" role="log" aria-live="polite" aria-label="채팅 메시지">
+                    <!-- Dynamic chat messages will be inserted here -->
+                </div>
+                <div class="prompt_suggestion_Box" id="suggestionBox" role="list" aria-label="질문 제안">
+                    <!-- Dynamic suggestions will be inserted here -->
+                </div>
+            </section>
+    </main>
+    <div class="detail_modal_bg" id="detail_modalBg" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription" tabindex="-1">
+        <div class="modal_box" id="modalBox">
+            <button class="modal_closeBtn" id="modalCloseBtn" aria-label="모달 닫기"><img src="./img/close_btn.svg" alt="" aria-hidden="true"></button>
+            <h2 class="modal_h1" id="modalTitle">색상 팔레트</h2>
+            <p class="modal_p1" id="modalDescription">색상 팔레트의 심미적 조화, 대비(Accessibillity), 및 브랜드 아이덴티티 전달력을 분석합니다.</p>
+            <span class="modal_standard">
+                <span class="modal_h2_box">
+                    <img src="./img/stand_icon.svg" alt="" class="standard_icon">
+                    <p class="modal_h2">기준</p>
+                </span>
+                <p class="modal_p2" id="modalCriteria">색채 이론(Complementary Colors)</p>
+            </span>
+            <span class="modal_element">
+                <span class="modal_h2_box">
+                    <img src="./img/ele_icon.svg" alt="" class="element_icon">
+                    <p class="modal_h2">주요 요소</p>
+                </span>
+                <span class="modal_p2_box" id="modalElements">
+                    <!-- Dynamic elements will be inserted here -->
+                </span>
+            </span>
+            <span class="modal_detail">
+                <span class="modal_h2_box">
+                    <img src="./img/de_icon.svg" alt="" class="detail_icon">
+                    <p class="modal_h2">상세 분석</p>
+                </span>
+                <p class="modal_p2" id="modalDetailAnalysis">상세 분석 내용이 여기에 표시됩니다.</p>
+            </span>
+        </div>
+    </div>
+    <div class="analyze_prompt_box" id="chatInputBox" role="region" aria-label="채팅 입력">
+        <label for="chatInput" class="sr-only">디자인에 대한 질문 입력</label>
+        <textarea name="text" class="analyze_prompt" id="chatInput" placeholder="디자인에 대해 질문해보세요... (Shift+Enter: 줄바꿈, Enter: 전송)" aria-label="디자인에 대한 질문 입력" aria-describedby="chatInputHint"></textarea>
+        <span id="chatInputHint" class="sr-only">Shift와 Enter를 함께 누르면 줄바꿈, Enter만 누르면 전송됩니다.</span>
+        <button type="submit" class="analyze_send_btn" id="chatSendBtn" aria-label="메시지 전송" disabled><img src="./img/send.svg" alt="" aria-hidden="true"></button>
+    </div>
+    <footer>
+
+    </footer>
+    </div>
+</body>
+
+</html>

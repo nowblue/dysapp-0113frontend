@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<!-- =========================================
+     페이지: 구독 페이지 (subscribe.html)
+     ========================================= 
+     목적: 구독 플랜 선택 및 결제
+     
+     주요 기능:
+     - 구독 플랜 표시 (무료, 프로, 기업 등)
+     - 월간/연간 결제 주기 선택
+     - 플랜별 기능 비교
+     - 결제 처리 (향후 구현)
+     
+     관련 스크립트:
+     - scripts/app.js: 앱 초기화 및 공통 기능
+     - scripts/subscribe.js: 구독 플랜 렌더링 및 결제 처리
+     
+     데이터 흐름:
+     1. 페이지 로드 시 구독 플랜 정보 로드
+     2. 사용자가 플랜 선택 및 결제 주기 선택
+     3. 결제 처리 (향후 구현)
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구독 모델 - Dys</title>
+    
+    <!-- 전역 스타일시트 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티 -->
+    <script src="./includHTML.js" defer></script>
+    
+    <!-- 앱 초기화 -->
+    <script type="module" src="./scripts/app.js"></script>
+    
+    <!-- 구독 페이지 로직: 플랜 렌더링 및 결제 처리 -->
+    <script type="module" src="./scripts/subscribe.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <!-- 네비게이션 바 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="subscribe_main">
+            
+            <!-- 페이지 헤더: 제목 -->
+            <div class="subscribe-header">
+                <h1 class="subscribe-title">구독 모델</h1>
+            </div>
+
+            <!-- =========================================
+                 결제 주기 토글
+                 ========================================= 
+                 월간/연간 결제 주기를 선택하는 토글 버튼
+                 선택된 주기에 따라 플랜 가격이 변경됨
+            -->
+            <div class="billing-toggle-container">
+                <div class="billing-toggle" role="tablist" aria-label="결제 주기 선택">
+                    <!-- 월간 결제: 기본 선택 상태 -->
+                    <button class="toggle-btn active" data-period="monthly" role="tab" aria-selected="true" aria-label="월간 결제">월간</button>
+                    
+                    <!-- 연간 결제: 연간 할인 적용 -->
+                    <button class="toggle-btn" data-period="yearly" role="tab" aria-selected="false" aria-label="연간 결제">연간</button>
+                </div>
+            </div>
+
+            <!-- =========================================
+                 구독 플랜 그리드
+                 ========================================= 
+                 구독 플랜 카드들이 그리드 형태로 표시됨
+                 subscribe.js의 renderPlans() 함수가 내용 생성
+                 
+                 플랜 종류 (예상):
+                 - 무료 플랜 (Free)
+                 - 프로 플랜 (Pro)
+                 - 기업 플랜 (Enterprise)
+            -->
+            <div class="plans-grid">
+                <!-- Plan cards will be rendered by subscribe.js -->
+            </div>
+        </main>
+    </div>
+</body>
+</html>

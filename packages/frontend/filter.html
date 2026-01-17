@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- =========================================
+     페이지: 검색 필터 페이지 (filter.html)
+     ========================================= 
+     목적: 검색 결과를 필터링하기 위한 고급 필터 설정 페이지
+     
+     주요 기능:
+     - 색상 선택 필터
+     - 내 스타일 반영 비율 조정 (슬라이더)
+     - 연관 키워드 추가/관리
+     - 저장된 필터 불러오기/삭제
+     - 필터 저장 및 적용
+     
+     필터 옵션:
+     1. 내 선호 정보 불러오기: 사용자의 선호 스타일 정보 표시
+     2. 내 필터 불러오기: 저장된 필터 목록 표시 및 불러오기
+     3. 현재 필터 저장: 현재 설정한 필터를 저장
+     
+     관련 스크립트:
+     - 인라인 JavaScript로 필터 UI 로직 처리
+     - 필터 저장 시 sessionStorage 사용
+     - 필터 적용 후 searchTab.html로 복귀
+     
+     참고:
+     - 이 페이지는 searchTab.html의 필터 버튼 클릭 시 이동
+     - 필터 설정 후 "저장하기" 버튼으로 적용
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 필터 - Dys</title>
+    
+    <!-- 전역 스타일시트 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티 -->
+    <script src="./includHTML.js" defer></script>
+</head>
+
+<body>
+    <div class="wrap">
+        <!-- 네비게이션 바 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="filter_main">
+            <section class="search_box">
+                <textarea name="text" class="search" placeholder="검색할 텍스트를 입력해주세요."></textarea>
+                <button type="submit" class="uploadIcon"><img src="./img/upload.svg" alt=""></button>
+                <button type="submit" class="searchIcon"><img src="./img/search.svg" alt=""></button>
+            </section>
+
+            <section class="filterWrap">
+                <section class="filterCategory">
+                    <p class="filterH1">검색 필터</p>
+                    <div class="fC_BtnWrap">
+                        <button class="fC favBtn">내 선호 정보 불러오기</button>
+                        <button class="fC myFBtn">내 필터 불러오기</button>
+                        <button class="fC saveFBtn">현재 필터 저장</button>
+                    </div>
+                    <button class="fC finishFBtn">저장하기</button>
+                </section>
+
+                <section class="favoriteF">
+                    <p class="favP1">This is your Style</p>
+                    <div class="fav-images">
+                        <div class="fav-item">
+                            <p class="favP2">색상</p>
+                            <p class="favP3">류지환님은 난색 계열을 주로 쓰는 경향이 있어요.</p>
+                        </div>
+                        <div class="fav-item">
+                            <p class="favP2">관심 카테고리</p>
+                            <p class="favP3">류지환님은 난색 계열을 주로 쓰는 경향이 있어요.</p>
+                        </div>
+                        <div class="fav-item">
+                            <p class="favP2">종합분석</p>
+                            <p class="favP3">류지환님은 난색 계열을 주로 쓰는 경향이 있어요.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="myF" style="display:none;">
+                    <div class="filter-list" id="myFilters">
+                        <p class="myFH1">내 필터</p>
+                        <div class="filter-item">
+                            <div class="filter_leftSide">
+                                <div class="colors">
+                                    <p class="myFp3">색상</p>
+                                    <span class="color-dot color-dark"></span>
+                                    <span class="color-dot color-brown"></span>
+                                    <span class="color-dot color-yellow"></span>
+                                    <span class="color-dot color-red"></span>
+                                </div>
+                                <p class="favP4 myFp1">내 스타일 반영 <span>70%</span></p>
+                                <p class="favP4 myFp2">연관 키워드 <span>잡지 레이아웃</span> <span>디자인 트렌드</span> </p>
+                            </div>
+
+                            <button class="btn-load">불러오기</button>
+                            <button class="btn-delete"><img src="./img/delete_black.svg" alt=""
+                                    class="deleteIcon"></button>
+                        </div>
+                        <div class="filter-item">
+                            <div class="filter_leftSide">
+                                <div class="colors">
+                                    <p class="myFp3">색상</p>
+                                    <span class="color-dot color-dark"></span>
+                                    <span class="color-dot color-yellow"></span>
+                                    <span class="color-dot color-green"></span>
+                                </div>
+                                <p class="favP4 myFp1">내 스타일 반영 <span>60%</span></p>
+                                <p class="favP4 myFp2">연관 키워드 <span>포스터 디자인</span> <span>책 표지</span> <span>타이포그래피</span></p>
+                            </div>
+
+                            <button class="btn-load">불러오기</button>
+                            <button class="btn-delete"><img src="./img/delete_black.svg" alt=""
+                                    class="deleteIcon"></button>
+                        </div>
+                        <div class="filter-item">
+                            <div class="filter_leftSide">
+                                <div class="colors">
+                                    <p class="myFp3">색상</p>
+                                    <span class="color-dot color-blue"></span>
+                                    <span class="color-dot color-pink"></span>
+                                    <span class="color-dot color-green"></span>
+                                    <span class="color-dot color-purple"></span>
+                                    <span class="color-dot color-dark"></span>
+                                    <span class="color-dot color-orange"></span>
+                                </div>
+                                <p class="favP4 myFp1">내 스타일 반영 <span>95%</span></p>
+                                <p class="favP4 myFp2">연관 키워드 <span>일러스트 표지</span> <span>캐릭터</span> </p>
+                            </div>
+
+                            <button class="btn-load">불러오기</button>
+                            <button class="btn-delete"><img src="./img/delete_black.svg" alt=""
+                                    class="deleteIcon"></button>
+                        </div>
+                    </div>
+                </section>
+                <div class="modal-background" id="confirmModal">
+                    <div class="modal">
+                        <p class="deleteModalP">이 필터를 삭제하시겠어요?</p>
+                        <div class="filter-item filterDelete">
+                            <div class="filter_leftSide">
+                                <div class="colors">
+                                    <p class="myFp3">색상</p>
+                                    <span class="color-dot color-blue"></span>
+                                    <span class="color-dot color-pink"></span>
+                                    <span class="color-dot color-green"></span>
+                                    <span class="color-dot color-purple"></span>
+                                    <span class="color-dot color-dark"></span>
+                                    <span class="color-dot color-orange"></span>
+                                </div>
+                                <p class="favP4 myFp1">내 스타일 반영 <span>95%</span></p>
+                                <p class="favP4 myFp2">연관 키워드 <span>일러스트 표지</span> <span>캐릭터</span> </p>
+                            </div>
+                        </div>
+                        <button class="btn-yes">네</button>
+                        <button class="btn-no">아니요</button>
+                    </div>
+                </div>
+
+                <section class="saveF">
+                    <!-- saveF 내용 -->
+                </section>
+
+                <section class="filterBasic">
+                    <div class="filterBasic_wrap">
+                        <div class="colorSelect">
+                            <p class="filterp">색상 선택</p>
+                            <div class="colorPalette">
+                                <span class="colorP1"></span>
+                                <span class="colorP2"></span>
+                                <span class="colorP3"></span>
+                                <span class="colorP4"></span>
+                                <span class="colorP5"></span>
+                                <span class="colorP6"></span>
+                                <span class="colorP7"></span>
+                                <span class="colorP8"></span>
+                                <span class="colorP9"></span>
+                                <span class="colorP10"></span>
+                                <span class="colorP11"></span>
+                                <span class="colorP12"></span>
+                            </div>
+                            <p class="colorP_moreBtn">자세히 보기</p>
+                        </div>
+                        <div class="mySty_reflect">
+                            <p class="filterp">내 스타일 반영</p>
+                            <div class="slider-container">
+                                <input type="range" id="styleRange" min="0" max="100" value="100" />
+                                <span class="percent-label" id="percentLabel">100%</span>
+                            </div>
+                        </div>
+                        <div class="keyword">
+                            <p class="filterp">연관 키워드</p>
+                            <div class="keywordAdd">
+                                <input type="text" id="keywordInput" />
+                                <button type="button" class="add-button" aria-label="키워드 추가">+</button>
+                            </div>
+                            <ul id="keywordItems"></ul>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- <div class="modal-background" id="confirmModal">
+        <div class="modal">
+            <p>이 필터를 삭제하시겠어요?</p>
+            <button class="btn-yes">네</button>
+            <button class="btn-no">아니요</button>
+        </div>
+    </div> -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ===============================================
+            //  [1. VW/VH 변환 함수]
+            // ===============================================
+            const pxToVw = (pxValue) => {
+                return (pxValue / window.innerWidth) * 100;
+            };
+            const pxToVh = (pxValue) => {
+                return (pxValue / window.innerHeight) * 100;
+            };
+
+
+            // ===============================================
+            // [변수 통합 선언]: 모든 요소를 DOMContentLoaded 스코프 최상단에서 한 번만 선언합니다.
+            // ===============================================
+            // 필터 섹션 버튼들
+            const favBtn = document.querySelector(".favBtn");
+            const myFBtn = document.querySelector(".myFBtn");
+            const saveFBtn = document.querySelector(".saveFBtn");
+            const finishFBtn = document.querySelector(".finishFBtn");
+
+            // 필터 섹션 컨테이너들
+            const basicSection = document.querySelector(".filterBasic");
+            const favoriteSection = document.querySelector(".favoriteF");
+            const myFSection = document.querySelector(".myF");
+            const saveFSection = document.querySelector(".saveF");
+
+            // 기타 UI 요소들
+            const boxes = document.querySelectorAll('.filenameBox');
+            const searchImages = document.querySelectorAll('.searchImgD');
+            const downBtn = document.querySelector('.downBtn');
+            const shareBtn = document.querySelector('.shareBtn');
+            const fileBox = document.querySelector('.fileBox');
+            const pageDim = document.querySelector('.page-dim');
+            const styleRange = document.getElementById('styleRange');
+            const percentLabel = document.getElementById('percentLabel');
+            const addButton = document.querySelector('.add-button');
+            const keywordInput = document.getElementById('keywordInput');
+            const keywordItems = document.getElementById('keywordItems');
+            const dPlusButton = document.querySelector('.d_plus');
+            const settingsBox = document.getElementById('DsettingsBox');
+
+            // 타이머 및 상태 추적 변수들
+            let pageDimHoverTimer;
+            let btnWidth, btnHeight;
+            let downIcon, shareIcon;
+            let originalShareSrc, hoverShareSrc, originalDownSrc, hoverDownSrc;
+            let currentActiveSpecialFilter = null; // 필터 섹션 로직
+            let currentActiveButton = null;        // 필터 섹션 로직
+
+
+            // ===============================================
+            // --- [2. filenameBox 클릭 이벤트 로직] ---
+            // ===============================================
+            if (boxes.length > 0) {
+                boxes.forEach(box => {
+                    const n = box.querySelector('.nothing');
+                    if (n) n.style.opacity = '0';
+                });
+                const firstFilenameBoxNothing = boxes[0]?.querySelector('.nothing');
+                if (firstFilenameBoxNothing) firstFilenameBoxNothing.style.opacity = '1';
+                if (boxes[0]) boxes[0].classList.add('active');
+
+                boxes.forEach(box => {
+                    box.addEventListener('click', () => {
+                        boxes.forEach(b => {
+                            const n = b.querySelector('.nothing');
+                            if (n) n.style.opacity = '0';
+                            b.classList.remove('active');
+                        });
+                        const target = box.querySelector('.nothing');
+                        if (target) target.style.opacity = '1';
+                        box.classList.add('active');
+                    });
+                });
+            }
+
+
+            // ===============================================
+            // --- [3. 이미지 호버 및 버튼/page-dim 로직] ---
+            // ===============================================
+            if (downBtn && shareBtn && fileBox) { // downBtn, shareBtn, fileBox 활용 로직
+                btnWidth = downBtn.offsetWidth;
+                btnHeight = downBtn.offsetHeight;
+                downIcon = downBtn.querySelector('.downIcon');
+                shareIcon = shareBtn.querySelector('.shareIcon');
+                originalShareSrc = './img/share.svg';
+                hoverShareSrc = './img/shareHover.svg';
+                originalDownSrc = './img/download.svg';
+                hoverDownSrc = './img/downHover.svg';
+            }
+
+            if (searchImages.length > 0) { // searchImages 활용 로직
+                searchImages.forEach(image => {
+                    image.addEventListener('mouseenter', () => {
+                        if (downBtn && shareBtn && fileBox) {
+                            const imgRect = image.getBoundingClientRect();
+                            const fileBoxRect = fileBox.getBoundingClientRect();
+                            const relativeLeft = imgRect.left - fileBoxRect.left;
+                            const relativeTop = imgRect.top - fileBoxRect.top;
+                            const imageWidth = imgRect.width;
+                            const imageHeight = imgRect.height;
+                            const centerY = relativeTop + (imageHeight / 2) - (btnHeight / 2);
+                            const downLeftPx = relativeLeft + imageWidth - btnWidth + 25;
+                            const shareLeftPx = relativeLeft - 25;
+                            downBtn.style.left = `${pxToVw(downLeftPx)}vw`;
+                            downBtn.style.top = `${pxToVh(centerY)}vh`;
+                            shareBtn.style.left = `${pxToVw(shareLeftPx)}vw`;
+                            shareBtn.style.top = `${pxToVh(centerY)}vh`;
+                            downBtn.style.opacity = '1';
+                            downBtn.style.pointerEvents = 'auto';
+                            shareBtn.style.opacity = '1';
+                            shareBtn.style.pointerEvents = 'auto';
+                            image.style.zIndex = '100';
+                            image.style.transform = 'scale(1.04)';
+                        }
+                        if (pageDim) {
+                            clearTimeout(pageDimHoverTimer);
+                            pageDimHoverTimer = setTimeout(() => {
+                                pageDim.classList.add('active');
+                            }, 1000);
+                        }
+                    });
+                    image.addEventListener('mouseleave', () => {
+                        if (downBtn && shareBtn) {
+                            downBtn.style.opacity = '0';
+                            downBtn.style.pointerEvents = 'none';
+                            shareBtn.style.opacity = '0';
+                            shareBtn.style.pointerEvents = 'none';
+                            image.style.zIndex = '';
+                            image.style.transform = '';
+                        }
+                        if (pageDim) {
+                            clearTimeout(pageDimHoverTimer);
+                            pageDim.classList.remove('active');
+                        }
+                    });
+                });
+            }
+            if (pageDim) { // pageDim 활용 로직
+                pageDim.addEventListener('mouseleave', () => {
+                    clearTimeout(pageDimHoverTimer);
+                    pageDim.classList.remove('active');
+                });
+            }
+
+
+            // ===============================================
+            // --- [4. 버튼 자체 호버 처리 로직 및 이미지 SRC 변경 로직] ---
+            // ===============================================
+            if (downBtn && shareBtn && downIcon && shareIcon && originalDownSrc && hoverDownSrc && originalShareSrc && hoverShareSrc) {
+                const allButtons = [downBtn, shareBtn];
+                allButtons.forEach(btn => {
+                    const icon = btn === downBtn ? downIcon : shareIcon;
+                    const originalSrc = btn === downBtn ? originalDownSrc : originalShareSrc;
+                    const hoverSrc = btn === downBtn ? hoverDownSrc : hoverShareSrc;
+
+                    btn.addEventListener('mouseenter', () => {
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                        if (icon) icon.src = hoverSrc;
+                    });
+                    btn.addEventListener('mouseleave', () => {
+                        btn.style.opacity = '0';
+                        btn.style.pointerEvents = 'none';
+                        if (icon) icon.src = originalSrc;
+                    });
+                });
+            }
+
+
+            // ===============================================
+            // --- [5. D_settingsBox 토글 로직] ---
+            // ===============================================
+            if (dPlusButton && settingsBox) {
+                dPlusButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    settingsBox.classList.toggle('show');
+                });
+                document.addEventListener('click', (event) => {
+                    if (!settingsBox.contains(event.target) && settingsBox.classList.contains('show')) {
+                        settingsBox.classList.remove('show');
+                    }
+                });
+            }
+
+
+            // ===============================================
+            // --- [6. 내 스타일 반영 슬라이더 로직] ---
+            // ===============================================
+            if (styleRange && percentLabel) {
+                styleRange.addEventListener('input', () => {
+                    percentLabel.textContent = styleRange.value + '%';
+                });
+            }
+
+
+            // ===============================================
+            // --- [7. 연관 키워드 추가 로직] ---
+            // ===============================================
+            if (addButton && keywordInput && keywordItems) {
+                addButton.addEventListener('click', () => {
+                    const keyword = keywordInput.value.trim();
+                    if (!keyword) {
+                        alert('키워드를 입력해주세요.');
+                        keywordInput.focus();
+                        return;
+                    }
+                    const exists = Array.from(keywordItems.children).some(li => li.textContent === keyword);
+                    if (exists) {
+                        alert('이미 추가된 키워드입니다.');
+                        keywordInput.value = '';
+                        keywordInput.focus();
+                        return;
+                    }
+                    const li = document.createElement('li');
+                    li.textContent = keyword;
+                    keywordItems.appendChild(li);
+                    keywordInput.value = '';
+                    keywordInput.focus();
+                });
+            }
+
+
+            // ===============================================
+            // --- [8. 검색 필터 섹션 전환 및 버튼 활성화 로직] ---
+            // ===============================================
+            // 모든 특수 필터 섹션들을 배열로 관리 (basicSection 제외)
+            const specialFilterSections = [favoriteSection, myFSection, saveFSection].filter(Boolean);
+
+            // 모든 필터 버튼들을 배열로 관리
+            const filterButtons = [favBtn, myFBtn, saveFBtn].filter(Boolean);
+
+            // 섹션을 보여주는 함수
+            function showSections(sectionToShow = null, clickedButton = null) {
+                specialFilterSections.forEach(section => {
+                    if (section) { section.style.display = 'none'; }
+                });
+                if (sectionToShow) {
+                    sectionToShow.style.display = 'block';
+                    currentActiveSpecialFilter = sectionToShow;
+                } else {
+                    currentActiveSpecialFilter = null;
+                }
+
+                filterButtons.forEach(btn => {
+                    if (btn) { btn.classList.remove('active-btn'); }
+                });
+                if (clickedButton && sectionToShow) {
+                    clickedButton.classList.add('active-btn');
+                    currentActiveButton = clickedButton;
+                } else {
+                    currentActiveButton = null;
+                }
+
+                if (basicSection) {
+                    basicSection.style.display = 'block';
+                }
+            }
+
+            // 페이지 로드 시: basicSection만 보이고, 특수 필터는 모두 숨겨진 상태로 초기화
+            if (basicSection) {
+                showSections(null, null);
+            }
+
+            // 각 버튼에 클릭 이벤트 연결
+            if (favBtn && favoriteSection) {
+                favBtn.addEventListener("click", () => {
+                    if (currentActiveButton === favBtn) {
+                        showSections(null, null);
+                    } else {
+                        showSections(favoriteSection, favBtn);
+                    }
+                });
+            }
+            if (myFBtn && myFSection) {
+                myFBtn.addEventListener("click", () => {
+                    if (currentActiveButton === myFBtn) {
+                        showSections(null, null);
+                    } else {
+                        showSections(myFSection, myFBtn);
+                    }
+                });
+            }
+            if (saveFBtn && saveFSection) {
+                saveFBtn.addEventListener("click", () => {
+                    if (currentActiveButton === saveFBtn) {
+                        showSections(null, null);
+                    } else {
+                        showSections(saveFSection, saveFBtn);
+                    }
+                });
+            }
+
+            const filterList = document.getElementById('myFilters');
+            const modalBg = document.getElementById('confirmModal');
+            const btnYes = document.querySelector('.btn-yes');
+            const btnNo = document.querySelector('.btn-no');
+
+            let itemToDelete = null;
+
+            filterList.addEventListener('click', function (e) {
+                const target = e.target;
+                const filterItem = target.closest('.filter-item');
+                if (!filterItem) return;
+
+                if (target.classList.contains('btn-load')) {
+                    alert('필터를 불러왔습니다!');
+                    // 실제 불러오기 로직을 여기에 구현하세요.
+                } else if (target.classList.contains('btn-delete')) {
+                    itemToDelete = filterItem;
+                    modalBg.style.display = 'flex';
+                }
+            });
+
+            btnYes.addEventListener('click', () => {
+                if (itemToDelete) {
+                    itemToDelete.remove();
+                    itemToDelete = null;
+                }
+                modalBg.style.display = 'none';
+            });
+
+            btnNo.addEventListener('click', () => {
+                itemToDelete = null;
+                modalBg.style.display = 'none';
+            });
+
+            modalBg.addEventListener('click', (e) => {
+                if (e.target === modalBg) {
+                    itemToDelete = null;
+                    modalBg.style.display = 'none';
+                }
+            });
+
+            // ===============================================
+            // --- [9. 필터 저장 및 적용 플로우] ---
+            // ===============================================
+            if (finishFBtn) {
+                finishFBtn.addEventListener('click', () => {
+                    // 현재 필터 상태 수집
+                    const selectedColors = Array.from(document.querySelectorAll('.colorPalette span.selected'))
+                        .map(span => {
+                            const classes = Array.from(span.classList);
+                            const colorClass = classes.find(c => c.startsWith('colorP'));
+                            return colorClass ? colorClass.replace('colorP', '') : null;
+                        })
+                        .filter(Boolean);
+
+                    const styleRange = document.getElementById('styleRange');
+                    const styleReflect = styleRange ? parseInt(styleRange.value, 10) : null;
+
+                    const keywordItems = document.getElementById('keywordItems');
+                    const keywords = keywordItems ? Array.from(keywordItems.querySelectorAll('li'))
+                        .map(li => li.textContent.trim())
+                        .filter(Boolean) : [];
+
+                    // 필터 객체 생성
+                    const filters = {
+                        colors: selectedColors,
+                        styleReflect: styleReflect,
+                        keywords: keywords,
+                        timestamp: Date.now(),
+                    };
+
+                    // sessionStorage에 저장
+                    sessionStorage.setItem('appliedFilters', JSON.stringify(filters));
+                    
+                    // searchTab으로 복귀
+                    window.location.href = 'searchTab.html';
+                });
+            }
+
+
+
+
+
+
+
+
+
+        }); // DOMContentLoaded 종료
+    </script>
+</body>
+
+</html>

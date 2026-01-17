@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<!-- =========================================
+     페이지: 설정 페이지 (settings.html)
+     ========================================= 
+     목적: 사용자 환경 설정 및 계정 관리
+     
+     주요 기능:
+     - 프로필 정보 수정 (이름, 선호도 등)
+     - 계정 설정
+     - 알림 설정
+     - 로그아웃
+     
+     관련 스크립트:
+     - scripts/app.js: 앱 초기화 (명시적으로 initApp() 호출)
+     - scripts/settings.js: 설정 섹션 렌더링 및 저장 처리
+     
+     특징:
+     - 설정 섹션들이 동적으로 렌더링됨 (settings.js)
+     - 사용자 프로필 정보를 불러와서 폼에 표시
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환경설정 - Dys</title>
+    
+    <!-- 전역 스타일시트 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티 -->
+    <script src="./includHTML.js" defer></script>
+    
+    <!-- 앱 초기화: 명시적으로 initApp() 함수 호출 -->
+    <script type="module">
+        import { initApp } from './scripts/app.js';
+        initApp();
+    </script>
+    
+    <!-- 설정 페이지 로직: 설정 섹션 렌더링 및 저장 -->
+    <script type="module" src="./scripts/settings.js"></script>
+</head>
+<body>
+    <div class="wrap">
+        <!-- 네비게이션 바 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="settings_main">
+            
+            <!-- 페이지 헤더: 제목 -->
+            <div class="settings-header">
+                <h1 class="settings-title">환경설정</h1>
+            </div>
+
+            <!-- =========================================
+                 설정 콘텐츠 영역
+                 ========================================= 
+                 설정 섹션들이 동적으로 렌더링됨
+                 settings.js의 renderSettings() 함수가 다음 섹션들을 생성:
+                 - 프로필 설정
+                 - 계정 설정
+                 - 알림 설정
+                 - 로그아웃 버튼
+            -->
+            <div class="settings-content">
+                <!-- Settings sections will be rendered by settings.js -->
+            </div>
+        </main>
+    </div>
+</body>
+</html>

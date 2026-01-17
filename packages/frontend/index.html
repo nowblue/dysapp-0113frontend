@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- =========================================
+     페이지: 메인 업로드 페이지 (index.html)
+     ========================================= 
+     목적: 디자인 이미지 업로드 및 분석 시작 페이지
+     
+     주요 기능:
+     - 이미지 파일 업로드 (드래그 앤 드롭 또는 클릭)
+     - 프롬프트 입력 (선택사항)
+     - 분석 히스토리 모달 표시
+     
+     관련 스크립트:
+     - scripts/app.js: 앱 초기화 및 공통 기능
+     - scripts/upload.js: 파일 업로드 처리 및 분석 시작
+     
+     데이터 흐름:
+     1. 사용자가 이미지 업로드 → upload.js의 handleFileSelect() 호출
+     2. 이미지 검증 후 analyzeDesign API 호출
+     3. 분석 완료 시 analyze.html로 자동 이동
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dys</title>
+    
+    <!-- 전역 스타일시트: 모든 페이지에서 공통으로 사용 -->
+    <link rel="stylesheet" href="./common.css">
+    
+    <!-- 외부 폰트: Google Fonts (Rubik) 및 SUITE 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUITE/fonts/static/woff2/SUITE.css" rel="stylesheet">
+    
+    <!-- HTML Include 유틸리티: nav.html을 자동으로 포함 -->
+    <script src="./includHTML.js" defer></script>
+    
+    <!-- 앱 초기화: Firebase 인증 및 공통 기능 설정 -->
+    <script type="module" src="./scripts/app.js"></script>
+    
+    <!-- 업로드 페이지 로직: 파일 업로드 및 분석 시작 처리 -->
+    <script type="module" src="./scripts/upload.js"></script>
+</head>
+
+<body>
+    <!-- 메인 래퍼: 페이지 전체 레이아웃 컨테이너 -->
+    <div class="index_wrap">
+        
+        <!-- 네비게이션 바: includHTML.js를 통해 nav.html이 자동 삽입됨 -->
+        <!-- data-include-path 속성: includHTML.js가 이 경로의 파일을 읽어서 nav 요소 안에 삽입 -->
+        <nav data-include-path="nav.html"></nav>
+        
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="index_main">
+            
+            <!-- 프롬프트 히스토리 버튼: 클릭 시 최근 분석 목록 모달 표시 -->
+            <button class="promptMore" aria-label="프롬프트 히스토리 열기">
+                <img src="./img/promptarraw.svg" alt="" class="promptArraw">
+            </button>
+            
+            <!-- 로고: 브랜드 타이포그래피 -->
+            <img src="./img/logo_typo.svg" alt="Dys 로고" class="upload_logo">
+            
+            <!-- =========================================
+                 파일 업로드 영역
+                 ========================================= 
+                 기능: 이미지 파일을 드래그 앤 드롭하거나 클릭하여 선택
+                 처리: upload.js의 handleFileSelect() 함수가 파일 선택 이벤트 처리
+            -->
+            <div class="uploadBox">
+                <div class="UBox_wrap">
+                    <img src="./img/fileicon.svg" alt="파일 아이콘" class="U_icon">
+                    <p class="U_message">이미지 및 파일을 업로드하세요.</p>
+                    <p class="U_message2">
+                        파일을 드래그하거나 클릭하여 파일을 선택하세요.<br />
+                        지원 파일 형식: jpg, png, pdf
+                    </p>
+                </div>
+                <!-- 파일 입력: accept 속성으로 이미지 파일만 선택 가능 -->
+                <input type="file" name="file" class="upload_input" accept="image/png, image/jpeg" aria-label="이미지 파일 선택">
+            </div>
+
+            <!-- =========================================
+                 프롬프트 입력 영역
+                 ========================================= 
+                 기능: 분석 시 추가로 고려할 프롬프트 입력 (선택사항)
+                 예시: "차분한 느낌으로", "따뜻한 톤으로" 등
+            -->
+            <div class="prompt_box">
+                <!-- 프롬프트 텍스트 입력 -->
+                <textarea name="text" class="prompt" placeholder="여기에 적으세요." aria-label="프롬프트 입력"></textarea>
+                
+                <!-- 전송 버튼: 프롬프트와 함께 분석 시작 -->
+                <button type="submit" class="send_btn" aria-label="분석 시작">
+                    <img src="./img/send.svg" alt="전송">
+                </button>
+                
+                <!-- 추천 프롬프트 버튼들: 빠른 입력을 위한 프리셋 -->
+                <div class="recommand">
+                    <button class="reco1 reco" aria-label="차분한 스타일 프롬프트">차분한</button>
+                    <button class="reco2 reco" aria-label="따뜻한 스타일 프롬프트">따뜻한</button>
+                    <button class="reco3 reco" aria-label="따스한 스타일 프롬프트">따스한</button>
+                </div>
+            </div>
+            
+            <!-- =========================================
+                 프롬프트 히스토리 모달
+                 ========================================= 
+                 기능: 최근 분석 내역을 보여주는 모달 팝업
+                 표시: promptMore 버튼 클릭 시 표시됨
+                 초기 상태: display:none으로 숨김 처리
+            -->
+            <div id="promptModal" class="indexmodalBg" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+                <div class="modal-content">
+                    <!-- 모달 닫기 버튼 -->
+                    <button id="closeModalBtn" class="modal-close-btn" aria-label="모달 닫기">
+                        <img src="./img/promptarraw.svg" alt="">
+                    </button>
+                    
+                    <!-- 분석 히스토리 항목 (동적으로 생성됨) -->
+                    <div class="promptLi">
+                        <div class="promptLiTextWrap">
+                            <p class="promptLiH1">이미지 분석 ('img.jpg')</p>
+                            <p class="promptLiDate">2025-10-21 10:52</p>
+                        </div>
+                        <!-- 결과 보기 버튼: analyze.html로 이동 -->
+                        <button class="viewResultBtn">결과보기</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+
+    <script>
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     const arrow = document.querySelector(".promptArraw");
+//     const promptBox = document.querySelector(".prompt_box");
+//     const recommand = document.querySelector(".recommand");
+
+//     arrow.addEventListener("click", () => {
+//         promptBox.classList.toggle("expanded");
+//         recommand.classList.toggle("hide");
+//     });
+// });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const promptMoreBtn = document.querySelector('.promptMore');
+  const promptModal = document.getElementById('promptModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+
+  if (!promptMoreBtn || !promptModal || !closeModalBtn) return;
+
+  // 모달 열기
+  promptMoreBtn.addEventListener('click', () => {
+    promptModal.style.display = 'flex';
+  });
+
+  // 모달 닫기 버튼
+  closeModalBtn.addEventListener('click', () => {
+    promptModal.style.display = 'none';
+  });
+
+  // 모달 외부 배경 클릭 시에도 닫기
+  promptModal.addEventListener('click', (e) => {
+    if (e.target === promptModal) {
+      promptModal.style.display = 'none';
+    }
+  });
+});
+
+
+
+
+
+
+// 프롬포트에 작성된 값을 가져와서 사용할 수 있는 코드입니다! 혹시 몰라 추가로 넣어둬요!
+// document.getElementById('sendBtn').addEventListener('click', () => {
+//     const text = document.querySelector('.prompt').value;
+//     console.log(text); // 여기서 서버로 보내거나, 화면에 표시하거나 등 원하는 작업 가능
+// });
+    </script>
+</body>
+
+</html>

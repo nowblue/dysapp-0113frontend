@@ -1,0 +1,3771 @@
+@charset "UTF-8";
+/*index.html에 선언된 스타일시트*/
+
+/* =========================================
+   Design Tokens (CSS Variables)
+   ========================================= 
+   모든 디자인 값의 단일 소스입니다.
+   색상, 타이포그래피, 간격, 그림자 등을 관리합니다.
+*/
+
+:root {
+    --ti-cursor-font-weight: .5px;
+    --ti-cursor-transform: translateX(-1.5rem);
+    --ti-cursor-color: rgba(0, 0, 0, .6);
+    --ti-cursor-line-height: 5px;
+    --ti-cursor-height: 5px;
+
+    /*공통수치 통합관리*/
+    --line-height-base: 1.6; /* 기본 본문 행간 (body, 일반 텍스트) */
+    --line-height-tight: 1.35; /* 타이트한 행간 (작은 텍스트, 라벨) */
+    --line-height-relaxed: 1.8; /* 여유로운 행간 (긴 문단) */
+    
+    /* Legacy: 하위 호환성을 위해 유지 (사용처 점검 후 제거 예정) */
+    --union-line-height: var(--line-height-tight);
+
+    /* Z-Index 계층 시스템 */
+    --z-base: 1;
+    --z-content: 0;
+    --z-nav: 100;
+    --z-dropdown: 200;
+    --z-sticky: 300;
+    --z-overlay: 1000;
+    --z-modal: 10000;
+    --z-tooltip: 10001;
+
+    /*컬러 관리*/
+    --background: #ffffff;
+    /* --systemColor: #ffffff; */
+    /* --systemColorD: rgba(0, 0, 0, 0.85);
+    --systemColorLD: rgba(0, 0, 0, .6);
+    --sectorTitleColor: rgba(255, 255, 255, 0.8); */
+    --ivory: #FFFFF3;
+    --Gray: #DADADA;
+    --purpleGy: #E7E2FF;
+    --purpleGy2: #A8A8BF;
+    --purpleA: #F6F5F9;
+    --purpleB: #EBEBF8;
+    --purpleC: #7C7895;
+    --purpleMain: #875CFF;
+    --purpleD: #A483FF;
+    --purpleE: #BEA7FF;
+    --purpleF: #E0D5FF;
+    --purpleG: #FAFAFF;
+    --navy: #1B1233;
+
+    --text-xlarge: 3vw;
+    /* 6.000vw * 0.5625 */
+    --text-large: 1.8vw;
+    /* 4.650vw * 0.5625 */
+    --text-medium: 1.3vw;
+    --text-regular: 1.1vw;
+    --text-semi-medium: 1vw;
+    --text-small: 0.9vw;
+    --text-semi-small: 0.8vw;
+    --text-extra-small: 0.75vw;
+    --text-tiny: 0.7vw;
+
+    /* Minimum font sizes for readability (mobile/accessibility) */
+    --text-xlarge-min: 24px;
+    --text-large-min: 18px;
+    --text-medium-min: 16px;
+    --text-regular-min: 14px;
+    --text-semi-medium-min: 13px;
+    --text-small-min: 12px;
+    --text-semi-small-min: 11px;
+    --text-extra-small-min: 10px;
+    --text-tiny-min: 10px;
+
+    /* Design Tokens: Shadows & Easings */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(135, 92, 255, 0.1), 0 2px 4px -1px rgba(135, 92, 255, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(135, 92, 255, 0.15), 0 4px 6px -2px rgba(135, 92, 255, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(135, 92, 255, 0.2), 0 10px 10px -5px rgba(135, 92, 255, 0.1);
+    
+    --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Usage Guide:
+     * --line-height-base: 본문, 긴 텍스트, 일반 콘텐츠
+     * --line-height-tight: 작은 텍스트, 라벨, 컴팩트한 UI
+     * --line-height-relaxed: 여유로운 레이아웃, 긴 문단
+     */
+}
+
+/* =========================================
+   Animations & Keyframes
+   ========================================= 
+   재사용 가능한 애니메이션 정의
+*/
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+
+/* =========================================
+   Base Styles & Reset
+   ========================================= 
+   전역 스타일, 리셋, 기본 타이포그래피
+*/
+
+* {
+    font-family: 'Rubik', 'SUITE', 'sans-serif';
+    margin: 0;
+}
+
+/* Ensure minimum readable font sizes */
+body {
+    font-size: max(var(--text-regular), var(--text-regular-min));
+    line-height: var(--line-height-base);
+    letter-spacing: -0.02em;
+    word-break: keep-all;
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+    position: relative;
+    margin-left: 4vw; /* 사이드바 너비만큼 왼쪽 여백 */
+    min-height: 100vh;
+    width: calc(100% - 4vw); /* 사이드바를 제외한 나머지 너비 */
+    box-sizing: border-box;
+}
+
+/* =========================================
+   Custom Scrollbar
+   ========================================= 
+   브랜드 톤에 맞춘 커스텀 스크롤바
+*/
+
+::-webkit-scrollbar {
+    /* display: none; */
+    width: 0.5vw;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* =========================================
+   Navigation Components
+   ========================================= 
+   사이드바, 네비게이션 메뉴, 설정 박스
+*/
+
+
+.layout {
+    /* position: relative; */
+    position: static !important;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 4vw;
+    height: 100vh;
+    background-color: #F6F5F9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: var(--z-nav);
+    transition: background-color 0.3s ease;
+}
+
+.sidebar:hover {
+    background-color: var(--purpleB);
+}
+
+/*아래 3개는 호버할 경우 커지게 하는 건데,,,, 굳이 안 넣으려면 빼도 됨*/
+.sidebar img,
+.mypageIcon {
+    transition: transform 0.2s ease;
+}
+
+.sidebar img:hover,
+.mypageIcon:hover {
+    transform: scale(1.12);
+}
+
+.logo_ul img:hover {
+    transform: none;
+}
+
+.nav_ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar li {
+    margin: 1vw 0;
+}
+
+.logo_ul {
+    margin-top: .7vw;
+}
+
+.nav_tab {
+    padding: .5vw 0;
+}
+
+/* 현재 페이지 활성 상태 */
+.nav_tab a.active,
+.nav_tab li.active a {
+    opacity: 1;
+    filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(7492%) hue-rotate(260deg) brightness(95%) contrast(101%);
+}
+
+.nav_tab a:not(.active) {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.nav_tab a:not(.active):hover {
+    opacity: 0.9;
+}
+
+/* 아래 고정 역할 */
+.nav_ul3 {
+    margin-top: auto;
+    /* flex 기준 맨 아래로 밀어내기 */
+    padding-bottom: 1vw;
+}
+
+.nav_ul3 button,
+.nav_ul3 .nav-link {
+    border: none;
+    margin: 1vw 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav_ul3 .nav-link {
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.nav_ul3 .nav-link:not(.active) {
+    opacity: 0.6;
+}
+
+.nav_ul3 .nav-link:not(.active):hover {
+    opacity: 0.9;
+}
+
+.nav_ul3 .nav-link.active {
+    opacity: 1;
+    filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(7492%) hue-rotate(260deg) brightness(95%) contrast(101%);
+}
+
+/* 로그인 버튼 스타일 */
+.nav-login-btn {
+    border: none;
+    margin: 1vw 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.nav-login-btn:hover {
+    opacity: 0.9;
+}
+
+.nav-login-btn svg {
+    stroke: currentColor;
+    color: inherit;
+}
+
+/* 마이페이지 아이콘 - 제거됨 (사이드바 내부 링크로 통합) */
+.mypageIcon {
+    display: none; /* nav.html의 중복 버튼 제거로 인해 숨김 */
+}
+
+
+
+/*설정 박스*/
+/* 뭔가 오류가 있음... 확인 후 수정 예정 */
+/* div #settingsBox .settings-box{
+    left: 10vw;
+    bottom: 10vw;
+    display: block;
+} */
+
+.settings-box {
+    display: none;
+    position: fixed;
+    bottom: 5vw;
+    left: 5vw;
+    width: 15vw;
+    background: white;
+    border-radius: 1vw;
+    box-shadow: 0 0.5vw 2vw rgba(0,0,0,0.1);
+    z-index: var(--z-dropdown);
+    overflow: hidden;
+    border: 1px solid #E7E2FF;
+    padding: 0;
+}
+
+.settings-header {
+    padding: 1vw;
+    border-bottom: 1px solid #E7E2FF;
+    background: #F9FAFC;
+}
+
+.settings-header h3 {
+    margin: 0;
+    font-size: 1vw;
+    color: #1B1233;
+}
+
+.settings-content {
+    padding: 1vw;
+}
+
+.setting-group {
+    margin-bottom: 1vw;
+}
+
+.setting-group label {
+    display: block;
+    font-size: 0.8vw;
+    color: #7C7895;
+    margin-bottom: 0.4vw;
+}
+
+.setting-group select {
+    width: 100%;
+    padding: 0.5vw;
+    border: 1px solid #E7E2FF;
+    border-radius: 0.4vw;
+    font-size: 0.9vw;
+    color: #1B1233;
+}
+
+.settings-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #E7E2FF;
+    padding-top: 0.5vw;
+}
+
+.settings-menu li {
+    margin-bottom: 0.5vw;
+}
+
+.settings-menu li a {
+    display: block;
+    padding: 0.5vw;
+    text-decoration: none;
+    color: #1B1233;
+    font-size: 0.9vw;
+    border-radius: 0.4vw;
+    transition: background 0.2s;
+}
+
+.settings-menu li a:hover {
+    background: #F0F0FF;
+    color: #875CFF;
+}
+
+
+
+
+
+/* =========================================
+   Index/Upload Page Components
+   ========================================= 
+   업로드 페이지(index.html)의 주요 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .index_main: 메인 콘텐츠 영역
+   - .uploadBox: 파일 업로드 박스 (드래그 앤 드롭 영역)
+   - .upload_input: 파일 입력 필드
+   - .prompt_box: 프롬프트 입력 영역
+   - .indexmodalBg: 프롬프트 히스토리 모달 배경
+   
+   사용 위치: index.html
+*/
+
+
+main {
+    display: inline-flex;
+    /* padding: 5vw 5vw 0 4vw; */
+    /* height: 60vw; */
+    /* position: fixed; */
+    background: var(--background);
+    z-index: var(--z-content);
+    flex-direction: column;
+    /* align-items: center; */
+    position: relative; /* 명시적 position 설정 */
+}
+
+.index_main {
+    display: inline-flex;
+    /* padding: 5vw 5vw 0 4vw; */
+    /* height: 60vw; */
+    /* position: fixed; */
+    background: var(--background);
+    z-index: var(--z-content);
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* 명시적 position 설정 */
+    width: 100%; /* .wrap이 이미 margin-left를 가지고 있으므로 100% 사용 */
+    box-sizing: border-box;
+}
+
+.index_main .promptMore{
+    border: none;
+    background: none;
+    position: absolute;
+    top: 35.5vw;
+}
+
+.index_main .promptArraw {
+    /* position: absolute; */
+    /* margin-left: 43vw; */
+    /* top: 65vh; */
+    width: 1.3vw;
+}
+
+.index_wrap {
+    margin: 7vh 5vw 0 4vw;
+}
+
+.upload_logo {
+    display: inline-flex;
+    width: 8vw;
+}
+
+.uploadBox {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 4vw;
+    /* padding: 4.5vw 0 4vw 0; */
+    width: 43vw;
+    height: 37vh;
+    border-radius: 2vw;
+    border: 0.11vw #d1d1d1 dashed;
+    transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    transform: scale(1);
+    /* background-image: linear-gradient(to right, black 33%, rgba(255,255,255,0) 0%);
+    background-position: bottom; 
+    background-size: 7px 2px;/*점선 간격 수정
+    background-repeat: repeat-x; */
+}
+
+.uploadBox:hover {
+    border: 0.11vw var(--purpleMain) dashed;
+    /* box-shadow: 0 0 2vw var(--purpleMain); */
+    box-shadow: 0 0 2vw #F0EBFF;
+    transform: scale(1.005);
+}
+
+.upload_input {
+    position: relative;
+    margin: -32.5vh 0 0 0;
+    padding: 11.5vh 0 9vh 0;
+    width: 43vw;
+    height: 17vh;
+    border-radius: 2vw;
+    text-align: center;
+    /* display: none; */
+    overflow: hidden;
+    color: transparent;
+    /* 기본 텍스트 숨김 */
+}
+
+
+.upload_input::file-selector-button {
+    display: none;
+}
+
+.UBox_wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 8vh 0 4vw 0;
+}
+
+.U_icon {
+    width: 1.8vw;
+}
+
+.U_message {
+    margin: 1.9vw 0 1.5vw 0;
+    color: var(--purpleMain);
+    font-weight: 700;
+    /* font-size: var(--text-semi-medium); */
+    font-size: 1vw;
+}
+
+.U_message2 {
+    text-align: center;
+    color: var(--purpleGy2);
+    font-size: var(--text-semi-small);
+    line-height: 1.8vw;
+}
+
+.indexmodalBg {
+    position: fixed;
+    margin-top: -2vw;
+    top: 0; left: 0; right:0; bottom:0;
+    background: var(--background);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 120px; /* 이미지 상단과 비슷한 위치 조정 */
+    z-index: var(--z-overlay);
+  }
+  
+  .modal-content {
+    background: #EBEBF8;
+    display: inline-flex;
+    border-radius: 1vw;
+    width: 80vw;
+    height: 45vw;
+    /* max-width: 90%; */
+    padding: 2rem;
+    box-shadow: 0 0 .2vw .2vw rgba(160, 160, 160, 0.068);
+    font-family: 'SUITE', sans-serif;
+    color: #7C7895;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .modal-message {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .promptLi{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20vw;
+    height: 5vw;
+    background: var(--background);
+    border-radius: .5vw;
+    margin-top: 1vw;
+  }
+
+  .promptLiH1{
+    font-size: var(--text-small);
+    /* font-weight: 500; */
+  }
+  .promptLiDate{
+    font-size: var(--text-tiny);
+    margin-top: .5vw;
+  }
+
+.modal-close-btn{
+    border: none;
+    padding: 0 0 1vw 0;
+    background: none;
+}
+
+  .viewResultBtn {
+    padding: .5vw 1vw;
+    background: var(--purpleGy2);
+    border: none;
+    border-radius: .5vw;
+    color: var(--background);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-smooth);
+    font-size: var(--text-extra-small);
+    margin-left: 1vw;
+}
+
+.viewResultBtn:hover {
+    background-color: var(--purpleMain);
+    color: var(--background);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.viewResultBtn:active {
+    transform: scale(0.95);
+}
+  .modal-close-btn img{
+    transform: rotate(180deg);
+  }
+
+
+/* =========================================
+   Prompt Input Components
+   ========================================= 
+   프롬프트 입력 관련 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .prompt: 프롬프트 텍스트 입력창
+   - .send_btn: 전송 버튼
+   - .recommand: 추천 프롬프트 버튼 컨테이너
+   - .reco: 개별 추천 프롬프트 버튼
+   
+   사용 위치: index.html (메인 업로드 페이지)
+*/
+
+/* .prompt_box{
+    width: 30vw;
+    height: 10vw;
+    background-color: var(--purpleC);
+} */
+
+.prompt {
+    width: 56vw;
+    height: 10vw;
+    padding: 2vw;
+    /* color: var(--purpleC); */
+    color: #7C7895;
+    /* background-color: var(--purpleB); */
+    background-color: #EBEBF8;
+    border: none;
+    border-radius: 1.6vw;
+    /* font-size: var(--text-small); */
+    font-size: 0.9vw;
+    /* 아래는 박스 크기를 임의로 사용자가 수정할 수 있게 하는 건데, 그걸 막는 코드입니다. */
+    resize: none;
+    position: relative; /* z-index가 작동하려면 position 필요 */
+    z-index: var(--z-base);
+}
+
+.prompt::placeholder {
+    color: #aaa;
+    margin-top: 0;
+}
+
+.prompt:focus {
+    outline: none;
+}
+
+.send_btn {
+    position: absolute;
+    background-color: var(--purpleGy2);
+    margin: 1.2vw 0 0 -3.2vw;
+    width: 2vw;
+    height: 2vw;
+    border: none;
+    border-radius: 3vw;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send_btn img {
+    width: .6vw;
+}
+
+.recommand {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    position: absolute;
+    margin: 10.2vw 0 0 -58.2vw;
+}
+
+.reco {
+    /* width: 5vw; */
+    width: fit-content;
+    padding: .7vw 1.5vw;
+    margin-right: .8vw;
+    background-color: var(--background);
+    color: var(--purpleGy2);
+    font-size: var(--text-extra-small);
+    border: none;
+    border-radius: .7vw;
+}
+
+.reco:hover {
+    background-color: var(--purpleMain);
+    color: var(--background);
+}
+
+/* 클릭 전에는 숨겨둠 */
+/* .expanded_box {
+    display: none;
+    width: 56vw;
+    height: 20vh;
+    margin-top: 2vh;
+    background-color: #EBEBF8;
+    border-radius: 1.6vw;
+    padding: 2vw;
+    box-sizing: border-box;
+    font-size: 0.9vw;
+    color: #7C7895;
+} */
+
+/* 화살표 클릭 후 재조정할 크기 -> height확장 */
+/* .prompt.expanded {
+    height: 28vh; 
+} */
+
+
+
+
+
+/* =========================================
+   Analysis Page Components
+   ========================================= 
+   분석 결과 페이지(analyze.html)의 주요 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .Report_main: 분석 결과 메인 컨테이너
+   - .Report: 분석 결과 섹션
+   - .H1Text: 메인 제목 (디자인 포맷 및 점수)
+   - .main_percent: 키워드 태그 컨테이너
+   - .dataBox_wrap: 분석 데이터 박스 그리드 컨테이너
+   - .dataBox: 개별 분석 카테고리 박스 (색상, 레이아웃, 타이포그래피 등)
+   - .aiSuggestion: AI 추천 섹션
+   
+   레이아웃:
+   - 그리드 레이아웃으로 분석 카테고리를 카드 형태로 표시
+   - 각 카드 클릭 시 상세 분석 모달 표시
+   
+   사용 위치: analyze.html
+*/
+.Report_main {
+    display: inline-flex;
+    /* display: flex; */
+    width: 100%; /* .wrap이 이미 margin-left를 가지고 있으므로 100% 사용 */
+    padding-bottom: 12vw;
+    /* width: 87vw; */
+    /* padding: 5vw 6vw 0 5vw; */
+    /* height: 60vw; */
+    /* position: fixed; */
+    background: var(--background);
+    position: relative; /* 명시적 position 설정 */
+    z-index: var(--z-content);
+    box-sizing: border-box;
+    /* flex-direction: column;
+    align-items: center; */
+}
+
+.Report {
+    display: flex;
+    margin: 4vw auto;
+    margin-bottom: 1vw;
+    /* display: inline-flex; */
+    width: 87vw;
+    /* padding: 4vw 4vw 0 4vw; */
+    /* height: 60vw; */
+    /* position: fixed; */
+    background: var(--background);
+    position: relative; /* 명시적 position 설정 */
+    z-index: var(--z-content);
+    flex-direction: column;
+    /* align-items: center; */
+}
+
+.H1Text {
+    font-size: var(--text-regular);
+    width: 87vw;
+    margin: 0 auto 2vw auto;
+    color: var(--purpleC);
+    font-weight: 600;
+    text-align: center;
+}
+
+.main_percent {
+    height: 4vw;
+    width: 87vw;
+    margin: 0 auto;
+    padding-left: 0.8vw; /* 데이터박스 컨테이너와 좌측 정렬 일치 */
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: flex-end;
+    background: var(--background);
+    border-radius: 2vw;
+}
+
+.main_percent span {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-semi-small);
+    font-weight: 400;
+}
+
+.main_percent .per {
+    height: 4vw;
+    width: 50%;
+    background: var(--purpleMain);
+    border-top-left-radius: 2vw;
+    border-bottom-left-radius: 2vw;
+    color: var(--background);
+}
+
+.main_percent .per2 {
+    height: 4vw;
+    width: 25%;
+    background: var(--purpleD);
+}
+
+.main_percent .per3 {
+    height: 4vw;
+    width: 15%;
+    background: var(--purpleE);
+}
+
+.main_percent .per4 {
+    height: 4vw;
+    width: 10%;
+    background: var(--purpleF);
+    border-top-right-radius: 2vw;
+    border-bottom-right-radius: 2vw;
+}
+
+/* 살려줘............. */
+
+/* Overall Analysis Section */
+.overall-analysis-section {
+    width: 87vw;
+    margin: 2vw auto 1vw auto;
+    padding-left: 0.8vw; /* 데이터박스 컨테이너와 좌측 정렬 일치 */
+}
+
+.overall-analysis-box {
+    background: var(--background);
+    border: 0.09vw solid var(--purpleB);
+    border-radius: 2vw;
+    padding: 2vw 2vw 2vw 1vw; /* 좌측 패딩을 데이터박스(1vw)와 일치 */
+}
+
+.overall-analysis-title {
+    font-size: var(--text-medium);
+    font-weight: 600;
+    color: var(--purpleMain);
+    margin-bottom: 1vw;
+}
+
+.overall-analysis-text {
+    font-size: var(--text-regular);
+    line-height: var(--line-height-base);
+    color: var(--navy);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Strengths & Weaknesses Section */
+.strengths-weaknesses-section {
+    width: 87vw;
+    margin: 1vw auto;
+    display: flex;
+    gap: 1vw;
+    flex-wrap: wrap;
+}
+
+.strengths-box,
+.weaknesses-box {
+    flex: 1;
+    min-width: 26vw;
+    background: var(--background);
+    border: 0.09vw solid var(--purpleB);
+    border-radius: 2vw;
+    padding: 1.5vw;
+}
+
+.strengths-box {
+    border-left: 0.3vw solid #22c55e;
+}
+
+.weaknesses-box {
+    border-left: 0.3vw solid #ef4444;
+}
+
+.sw-title {
+    font-size: var(--text-semi-medium);
+    font-weight: 600;
+    color: var(--purpleMain);
+    margin-bottom: 1vw;
+}
+
+.sw-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sw-list li {
+    font-size: var(--text-small);
+    line-height: var(--line-height-base);
+    color: var(--navy);
+    margin-bottom: 0.8vw;
+    padding-left: 1.2vw;
+    position: relative;
+}
+
+.sw-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--purpleMain);
+    font-weight: bold;
+}
+
+.strengths-box .sw-list li::before {
+    color: #22c55e;
+}
+
+.weaknesses-box .sw-list li::before {
+    color: #ef4444;
+}
+
+.dataBox_wrap {
+    width: 87vw;
+    margin: .3vw auto 0 auto;
+    padding-left: 0.8vw; /* 데이터박스 좌측 정렬을 위한 패딩 */
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.8vw; /* 데이터박스 간 간격 통일 */
+}
+
+.dataBox {
+    width: 26vw;
+    height: 12vw;
+    padding: 1vw;
+    margin: .8vw 0 0 0; /* 좌측 마진 제거 (gap으로 대체) */
+    background: var(--background);
+    border: .09vw solid var(--purpleB);
+    border-radius: 2vw;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.H3Text {
+    font-size: var(--text-semi-small);
+    font-weight: 500;
+    padding: .5vw .5vw .5vw 1vw;
+}
+
+.dataElement {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 7.3vw;
+    width: 25vw;
+    margin: 0 auto;
+}
+
+.dataElement .colorlayout {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 13vw;
+}
+
+.dataElement span {
+    margin: .3vw 0 0 .3vw;
+    color: var(--background);
+    display: inline-flex;
+    align-items: flex-end;
+}
+
+.dataElement .color1 {
+    width: 11.4vw;
+    height: 6.1vw;
+    background-color: #9FBAF1;
+    border-radius: .8vw;
+    margin: .3vw 0 0 .3vw;
+    padding: 0 0 .7vw .7vw;
+    font-size: var(--text-small);
+}
+
+.dataElement .color2 {
+    width: 11.4vw;
+    height: 2.6vw;
+    background-color: #CBCBE7;
+    border-radius: .6vw;
+    padding: 0 0 .7vw .7vw;
+    font-size: var(--text-tiny);
+}
+
+.dataElement .color3 {
+    width: 5.2vw;
+    height: 2.6vw;
+    background-color: #EAF3B2;
+    border-radius: .6vw;
+    padding: 0 0 .7vw .7vw;
+    color: #010101;
+    font-size: var(--text-tiny);
+}
+
+.dataElement .color4 {
+    width: 5.2vw;
+    height: 2.6vw;
+    background-color: #595880;
+    border-radius: .6vw;
+    padding: 0 0 .7vw .7vw;
+    font-size: var(--text-tiny);
+}
+
+.describtion {
+    margin: 1vw 0 0 1vw;
+    font-size: var(--text-tiny);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    /* 원하는 줄 수로 설정 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.eleText {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--text-extra-small);
+    background: var(--purpleG);
+    border: .08vw solid var(--purpleB);
+    border-radius: .6vw;
+    width: 31%;
+    height: 40%;
+    margin-top: .3vw;
+    margin-right: .7vw;
+}
+
+.eleText:last-child {
+    margin-right: 0;
+}
+
+.utilizeBox {
+    display: inline-flex;
+    flex-direction: column;
+    width: 22vw;
+    height: 5.5vw;
+    font-size: var(--text-extra-small);
+    line-height: 1.5vw;
+    padding: .7vw 0 0vw 2vw;
+    background: var(--purpleG);
+    border: .08vw solid var(--purpleB);
+    margin-top: .3vw;
+    margin-left: .8vw;
+    margin-bottom: .6vw;
+    border-radius: 1vw;
+}
+
+.layoutBox {
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+}
+
+.metrics-grid {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* Accessibility Badges */
+.accessibility-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5vw;
+    margin-bottom: 0.8vw;
+    width: 100%;
+    justify-content: center;
+}
+
+.a11y-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3vw;
+    padding: 0.4vw 0.8vw;
+    border-radius: 0.5vw;
+    font-size: var(--text-tiny);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.a11y-badge:hover {
+    transform: translateY(-0.1vw);
+    box-shadow: 0 0.2vw 0.4vw rgba(0, 0, 0, 0.1);
+}
+
+.a11y-badge-lowContrast {
+    background: #FEE2E2;
+    color: #DC2626;
+    border: 0.1vw solid #FCA5A5;
+}
+
+.a11y-badge-tinyText {
+    background: #FEF3C7;
+    color: #D97706;
+    border: 0.1vw solid #FCD34D;
+}
+
+.a11y-badge-cluttered {
+    background: #E0E7FF;
+    color: #4338CA;
+    border: 0.1vw solid #A5B4FC;
+}
+
+.a11y-icon {
+    font-size: var(--text-small);
+    line-height: 1;
+}
+
+.a11y-label {
+    font-size: var(--text-tiny);
+    line-height: 1.35;
+}
+
+.oneEle {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 12vw;
+    margin-top: .7vw;
+    font-size: var(--text-extra-small);
+}
+
+.oneEle .item {
+    width: 3vw;
+    margin-left: .5vw;
+}
+
+.oneEle .value {
+    display: inline-flex;
+    align-items: center;
+    margin-left: .2vw;
+    padding-left: .7vw;
+    width: 6.3vw;
+    height: 2.3vw;
+    background: var(--purpleG);
+    border: .08vw solid var(--purpleB);
+    border-radius: .5vw;
+}
+
+.typoData {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textwrap {
+    margin-top: 1vw;
+    width: 24vw;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.textwrap .eng {
+    font-size: var(--text-large);
+}
+
+.textwrap .font {
+    font-size: var(--text-small);
+    font-weight: 300;
+}
+
+.textwrap .font2 {
+    font-size: var(--text-extra-small);
+    color: var(--purpleGy2);
+    font-weight: 200;
+}
+
+.dataBox .percent {
+    margin-top: 1vw;
+    width: 25vw;
+    height: .7vw;
+    background: var(--Gray);
+    border-radius: 2vw;
+}
+
+.percent .perInside {
+    margin: 0;
+    width: 83%;
+    height: .7vw;
+    background: var(--purpleMain);
+    border-top-left-radius: 2vw;
+    border-bottom-left-radius: 2vw;
+}
+
+.langData {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start
+}
+
+.langData .dataElement {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+    height: 7.3vw;
+    width: 25vw;
+    margin: 0 auto;
+    font-size: var(--text-extra-small);
+    text-align: center;
+}
+
+.langData .lang {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 6vw;
+    height: 3vw;
+    background: var(--purpleG);
+    border: .08vw solid var(--purpleB);
+    border-radius: .5vw;
+    color: #000000;
+}
+
+.langData .text {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 1vw;
+    width: 16.7vw;
+    height: 3vw;
+    background: var(--purpleG);
+    border: .08vw solid var(--purpleB);
+    border-radius: .5vw;
+    color: #000000;
+}
+
+.aiSuggestion {
+    width: 82vw;
+    /* height: 12vw; */
+    padding: 1.5vw 2vw; /* 패딩 조정 */
+    /* margin: .8vw 0 0 .8vw; */
+    margin-top: .8vw; /* 마진 통일 */
+    background: #F9FAFC;
+    border: .09vw solid var(--purpleB);
+    border-radius: 2vw;
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    /* flex-wrap: wrap; */
+    /* align-items: flex-start; */
+    gap: 1vw;
+}
+
+.aiSuggestion .star {
+    display: none; /* 별 아이콘 숨김 처리 (HTML 제거와 별개로 안전장치) */
+}
+
+/* .H2Text {
+    font-size: var(--text-semi-medium);
+    font-weight: 500;
+    padding: .5vw .5vw .5vw 1vw;
+} */
+
+.aiSuggestion .H2Text {
+    /* margin-left: 1vw; */
+    margin: 0;
+    color: var(--purpleMain);
+    font-size: var(--text-medium);
+    font-weight: 700;
+}
+
+.aiDescribtion {
+    font-size: var(--text-small);
+    color: #555;
+    line-height: 1.6;
+    /* width: 70vw; */
+    /* margin-top: .5vw; */
+    /* margin-left: 1vw; */
+}
+
+
+/* =========================================
+   Chat Interface Components
+   ========================================= 
+   AI 멘토 채팅 인터페이스 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .add_prompt: 채팅 섹션 컨테이너
+   - .chat-container: 채팅 메시지 목록 컨테이너 (스크롤 가능)
+   - .bubble_user: 사용자 메시지 버블
+   - .bubble_ai: AI 멘토 메시지 버블
+   - .bubbleBox1: 사용자 메시지 박스 (보라색 배경)
+   - .bubbleBox2: AI 메시지 박스 (흰색 배경)
+   - .prompt_suggestion_Box: 질문 제안 목록 컨테이너
+   - .sug_li: 개별 질문 제안 항목
+   
+   특징:
+   - 메시지 그룹핑: 같은 발신자의 연속 메시지는 간격 축소
+   - 스크롤 최적화: 최대 높이 제한 및 부드러운 스크롤
+   - 애니메이션: 메시지 등장 시 fadeInUp 애니메이션
+   
+   사용 위치: analyze.html
+*/
+
+.add_prompt {
+    margin: 0 auto;
+    width: 86vw;
+}
+
+/* 채팅 컨테이너: flex column 레이아웃 */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+    padding: 1.5vw;
+    min-height: 10vw;
+    height: auto; /* 동적 높이 허용 */
+    max-height: 70vh; /* 최대 높이 증가 */
+    overflow-y: auto;
+    margin-bottom: 1vw;
+    background: var(--purpleG);
+    border-radius: 1.5vw;
+    scroll-behavior: smooth;
+    flex-grow: 1; /* 컨테이너 내에서 확장 가능하도록 설정 */
+}
+
+.chat-container::-webkit-scrollbar {
+    width: 0.4vw;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: var(--purpleB);
+    border-radius: 0.2vw;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: var(--purpleMain);
+}
+
+.bubble_user,
+.bubble_ai {
+    opacity: 0; /* 초기 상태 투명 */
+    animation: fadeInUp 0.5s var(--ease-smooth) forwards;
+    transform-origin: bottom center;
+    will-change: opacity, transform; /* GPU 가속 최적화 */
+}
+
+.bubble_ai {
+    display: flex;
+    align-self: flex-start;
+    margin-left: 0;
+    max-width: 85%; /* 75%에서 85%로 증가하여 더 넓은 공간 확보 */
+    margin-right: auto;
+    margin-bottom: 0.5vw;
+}
+
+.bubbleBox2 {
+    display: inline-flex;
+    width: auto;
+    max-width: 100%;
+    background: var(--background);
+    border-radius: 1.5vw;
+    position: relative;
+    box-shadow: var(--shadow-md);
+    padding: 1.3vw;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: visible; /* 오버플로우 허용하여 텍스트가 잘리지 않도록 */
+    min-height: auto; /* 최소 높이 제거 */
+    max-height: none; /* 최대 높이 제거 */
+    transition: box-shadow 0.3s ease;
+}
+
+.bubbleBox2:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.bubbleBox2::before {
+    content: "";
+    position: absolute;
+    left: -0.8vw;
+    top: 1vw;
+    width: 0;
+    height: 0;
+    border-top: 0.8vw solid transparent;
+    border-bottom: 0.8vw solid transparent;
+    border-right: 0.8vw solid var(--background);
+}
+
+.promptB_ai {
+    font-size: var(--text-semi-small);
+    line-height: 1.6; /* 고정값 1.5vw 대신 상대값 사용하여 반응형 개선 */
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-height: auto; /* 최소 높이 제거 */
+    max-height: none; /* 최대 높이 제거 */
+}
+
+
+
+
+.prompt_suggestion_Box {
+    display: flex;
+    width: 100%;
+    background-color: var(--purpleG);
+    color: var(--purpleC);
+    flex-direction: column;
+    padding: 1.2vw;
+    margin-top: 1vw;
+    border-radius: 1vw;
+    gap: 0.5vw;
+    flex-wrap: wrap;
+}
+
+.sug_icon {
+    margin-right: 1vw;
+}
+
+.sug_ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sug_li {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    font-size: var(--text-tiny);
+    padding: 0.6vw 1vw;
+    margin: 0.3vw 0;
+    background: var(--background);
+    border-radius: 0.8vw;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 0.08vw solid transparent;
+}
+
+.sug_li:hover {
+    background: var(--purpleB);
+    border-color: var(--purpleMain);
+    transform: translateX(0.2vw);
+}
+
+
+
+.bubble_user {
+    display: flex;
+    align-self: flex-end;
+    margin-right: 0;
+    margin-left: auto;
+    max-width: 75%;
+    margin-bottom: 0.5vw;
+}
+
+.bubbleBox1 {
+    display: inline-flex;
+    width: auto;
+    max-width: 100%;
+    color: var(--background);
+    background: var(--purpleMain);
+    border-radius: 1vw;
+    position: relative;
+    padding: 1.3vw;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    box-shadow: var(--shadow-md);
+}
+
+.bubbleBox1::before {
+    content: "";
+    position: absolute;
+    right: -0.8vw;
+    top: 1vw;
+    width: 0;
+    height: 0;
+    border-top: 0.8vw solid transparent;
+    border-bottom: 0.8vw solid transparent;
+    border-left: 0.8vw solid var(--purpleMain);
+}
+
+.promptB_user {
+    font-size: var(--text-semi-small);
+    line-height: 1.5vw;
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+
+
+
+
+
+/* =========================================
+   Modal Components
+   ========================================= 
+   모달 팝업 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .detail_modal_bg: 상세 분석 모달 배경
+   - .modal_box: 모달 콘텐츠 박스
+   - .search_result_modal_bg: 검색 결과 상세 모달 배경
+   - .search_result_modal_box: 검색 결과 모달 콘텐츠
+   
+   기능:
+   - 분석 카테고리별 상세 정보 표시
+   - 검색 결과의 상세 정보 및 액션 버튼 표시
+   - 배경 클릭 또는 닫기 버튼으로 닫기
+   
+   사용 위치: analyze.html, searchTab.html
+*/
+#modalBox {
+    position: relative;
+}
+
+.modal_closeBtn {
+    position: absolute;
+    top: 1vw;
+    right: 1.5vw;
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--purpleMain);
+}
+
+/* 검색 결과 상세 모달 */
+.search_result_modal_bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-modal);
+    backdrop-filter: blur(4px);
+}
+
+.search_result_modal_bg.show {
+    display: flex;
+}
+
+.search_result_modal_box {
+    background: white;
+    width: 60vw;
+    max-width: 900px;
+    max-height: 85vh;
+    padding: 2vw;
+    border-radius: 1.5vw;
+    box-shadow: 0 0.5vw 2vw rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.search_modal_closeBtn {
+    position: absolute;
+    top: 1.5vw;
+    right: 1.5vw;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5vw;
+    z-index: var(--z-tooltip);
+    transition: transform 0.2s ease;
+}
+
+.search_modal_closeBtn:hover {
+    transform: scale(1.1);
+}
+
+.search_modal_closeBtn img {
+    width: 1.5vw;
+    height: auto;
+}
+
+.search_modal_content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vw;
+    overflow-y: auto;
+    padding-right: 0.5vw;
+}
+
+.search_modal_image {
+    width: 100%;
+    max-height: 40vh;
+    border-radius: 1vw;
+    overflow: hidden;
+    background: var(--purpleG);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search_modal_image img {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    object-fit: contain;
+}
+
+.search_modal_info {
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+}
+
+.search_modal_title {
+    font-size: var(--text-medium);
+    color: var(--purpleMain);
+    font-weight: 600;
+    margin: 0;
+    word-break: break-word;
+}
+
+.search_modal_meta {
+    display: flex;
+    gap: 1vw;
+    align-items: center;
+}
+
+.search_modal_similarity {
+    font-size: var(--text-small);
+    color: var(--purpleC);
+    background: var(--purpleG);
+    padding: 0.3vw 0.8vw;
+    border-radius: 0.5vw;
+}
+
+.search_modal_score {
+    font-size: var(--text-small);
+    color: var(--purpleMain);
+    font-weight: 600;
+}
+
+.search_modal_ocr {
+    margin-top: 0.5vw;
+    padding: 1vw;
+    background: var(--purpleG);
+    border-radius: 0.8vw;
+}
+
+.search_modal_ocr_label {
+    font-size: var(--text-semi-small);
+    color: var(--purpleC);
+    font-weight: 600;
+    margin-bottom: 0.5vw;
+}
+
+.search_modal_ocr_text {
+    font-size: var(--text-semi-small);
+    color: var(--navy);
+    line-height: var(--line-height-base);
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.search_modal_recommendation {
+    margin-top: 1.5vw;
+    padding-top: 1.5vw;
+    border-top: 1px solid var(--purpleB);
+}
+
+.search_modal_recommendation_label {
+    font-size: var(--text-medium);
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0.5vw;
+}
+
+.search_modal_recommendation_text {
+    font-size: var(--text-small);
+    color: var(--purpleC);
+    line-height: var(--line-height-relaxed);
+    margin-top: 0.5vw;
+    word-break: break-word;
+    padding: 1vw;
+    background: var(--purpleG);
+    border-radius: 0.5vw;
+    border-left: 3px solid var(--purpleMain);
+}
+
+.search_modal_actions {
+    display: flex;
+    gap: 1vw;
+    margin-top: 0.5vw;
+    flex-wrap: wrap;
+}
+
+.search_modal_action_btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    padding: 0.8vw 1.5vw;
+    border: none;
+    border-radius: 0.8vw;
+    font-size: var(--text-semi-small);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--purpleB);
+    color: var(--purpleMain);
+}
+
+.search_modal_action_btn:hover {
+    background: var(--purpleMain);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.search_modal_action_btn img {
+    width: 1vw;
+    height: auto;
+}
+
+
+
+
+/* 모달 배경 (처음에는 숨김) */
+.detail_modal_bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    /* 100% 뷰포트 너비 */
+    height: 100vh;
+    /* 100% 뷰포트 높이 */
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-modal);
+}
+
+/* 모달 박스 */
+.modal_box {
+    background: white;
+    width: 30vw;
+    padding: 3.5vw 3vw 3vw 3vw;
+    border-radius: 1.8vw;
+    box-shadow: 0 0 1vw rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    flex-direction: column;
+    max-height: calc(100vh - 8vw);
+    /* 뷰포트보다 커지면 스크롤 가능 */
+    overflow: auto;
+}
+
+.modal_h1 {
+    font-size: var(--text-large);
+    color: var(--purpleMain);
+    font-weight: 700;
+}
+
+.modal_p1 {
+    font-size: var(--text-extra-small);
+    color: #9FADBF;
+    margin-top: .5vw;
+}
+
+.modal_h2_box {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: .5vw;
+}
+
+.modal_h2 {
+    font-size: var(--text-small);
+    margin-left: .5vw;
+}
+
+.modal_p2 {
+    font-size: var(--text-semi-small);
+    background: var(--purpleG);
+    border: 0.1vw solid #F1F1F9;
+    padding: 1vw;
+    border-radius: .5vw;
+}
+
+.modal_p2_box {
+    display: inline-flex;
+}
+
+.modal_p2_box .modal_p2 {
+    margin-right: .5vw
+}
+
+.modal_p2_box .modal_p2:last-child {
+    margin-right: 0;
+}
+
+.modal_standard {
+    margin-top: 2vw;
+    margin-bottom: 1vw;
+}
+
+.modal_element {
+    margin-bottom: 1vw;
+}
+
+.modal_detail .modal_p2 {
+    line-height: 1.3vw;
+}
+
+/* =========================================
+   Analysis Page Chat Input
+   ========================================= 
+   분석 페이지(analyze.html) 하단 AI 멘토 채팅 입력창 스타일
+   
+   포함 컴포넌트:
+   - .analyze_prompt_box: 채팅 입력 영역 컨테이너 (고정 위치)
+   - .analyze_prompt: 채팅 메시지 입력 텍스트박스
+   - .analyze_send_btn: 메시지 전송 버튼
+   
+   특징:
+   - 페이지 하단에 고정 위치 (position: fixed)
+   - 입력 내용이 있을 때만 전송 버튼 활성화 (.active 클래스)
+   - Shift+Enter: 줄바꿈, Enter: 전송
+   
+   사용 위치: analyze.html
+*/
+
+.analyze_prompt_box {
+    position: fixed;
+    display: inline-flex;
+    width: 88vw;
+    height: 4vw;
+    left: 4vw;
+    /* top:49vw; */
+    bottom: 3vh;
+    margin-left: 4vw;
+    align-items: center;
+    z-index: var(--z-sticky);
+}
+
+.analyze_prompt {
+    position: absolute;
+    /* left: 4vw;
+    top:49vw; */
+    /* bottom: 2vh; */
+    width: 86vw;
+    padding: 1.5vw 0 .5vw 2vw;
+    color: var(--purpleC);
+    /* color: #EBEBF8; */
+    /* background-color: var(--purpleB); */
+    background-color: #EBEBF8;
+    border: none;
+    border-radius: 2vw;
+    /* font-size: var(--text-small); */
+    font-size: 0.9vw;
+    /* 아래는 박스 크기를 임의로 사용자가 수정할 수 있게 하는 건데, 그걸 막는 코드입니다. */
+    resize: none;
+    z-index: var(--z-base);
+}
+
+.analyze_prompt::placeholder {
+    color: #aaa;
+    margin-top: 0;
+    background: transparent;
+    border: none;
+}
+
+.analyze_prompt:focus {
+    outline: none;
+}
+
+.analyze_send_btn {
+    /* position: fixed; */
+    /* position: relative; */
+    position: absolute;
+    background-color: var(--purpleGy2);
+    width: 2vw;
+    height: 2vw;
+    right: 2vw;
+    /* left: 92.5vw;
+    bottom: 6.8vh; */
+    border: none;
+    border-radius: 3vw;
+    /* display: inline-flex;
+    align-items: center;
+    justify-content: center; */
+    z-index: var(--z-base);
+    transition: all 0.3s var(--ease-smooth);
+    opacity: 0.5;
+    transform: scale(0.9);
+    cursor: default;
+    pointer-events: none; /* 비활성 상태 클릭 방지 */
+}
+
+.analyze_send_btn.active {
+    opacity: 1;
+    transform: scale(1);
+    background-color: var(--purpleMain);
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 0 10px rgba(135, 92, 255, 0.4);
+}
+
+.analyze_send_btn.active:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(135, 92, 255, 0.6);
+}
+
+.analyze_send_btn img {
+    width: .6vw;
+}
+
+/* Message Grouping */
+.bubble_user.same-sender,
+.bubble_ai.same-sender {
+    margin-top: -0.2vw; /* 간격 좁히기 */
+    animation-name: fadeInUpSmall; /* 애니메이션 거리 단축 */
+}
+
+.bubble_user.same-sender .bubbleBox1::before,
+.bubble_ai.same-sender .bubbleBox2::before {
+    display: none; /* 꼬리 제거 */
+}
+
+@keyframes fadeInUpSmall {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+
+
+
+
+/* =========================================
+   Search Tab Components
+   ========================================= 
+   검색 페이지(searchTab.html)의 주요 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .search_main: 검색 페이지 메인 컨테이너
+   - .search_box: 검색 입력 영역
+   - .search: 검색어 입력 텍스트박스
+   - .uploadIcon: 이미지 업로드 검색 버튼
+   - .searchIcon: 텍스트 검색 버튼
+   - .searchfile1: 검색 결과 영역
+   - .category: 카테고리 탭 (나의 스타일, 나의 레퍼런스, 추가 인사이트)
+   - .searchImgBox: 검색 결과 이미지 그리드
+   - .searchImgCard: 개별 검색 결과 카드
+   
+   레이아웃:
+   - 그리드 레이아웃으로 검색 결과 이미지들을 카드 형태로 표시
+   - 카드 호버 시 다운로드/공유 버튼 표시
+   
+   사용 위치: searchTab.html
+*/
+.search_main {
+    display: inline-flex;
+    width: 100%; /* .wrap이 이미 margin-left를 가지고 있으므로 100% 사용 */
+    position: relative; /* z-index를 위한 position */
+    z-index: var(--z-content);
+    box-sizing: border-box;
+}
+
+.search_box {
+    margin: 1vw 0 1vw 2vw;
+}
+
+.uploadIcon {
+    position: absolute;
+    top: 1.8vw;
+    right: 9.1vw;
+    border: none;
+}
+
+.uploadIcon img {
+    width: 1.4vw;
+}
+
+.searchIcon {
+    position: absolute;
+    width: 2.5vw;
+    top: 1.9vw;
+    right: 6.3vw;
+    border: none;
+}
+
+.searchIcon img {
+    width: 1.3vw;
+}
+
+.search {
+    width: 86vw;
+    padding: 1vw 0 .2vw 2vw;
+    /* height: 3vw; */
+    color: var(--purpleC);
+    /* color: #EBEBF8; */
+    /* background-color: var(--purpleB); */
+    background-color: #EBEBF8;
+    border: none;
+    border-radius: 2vw;
+    /* font-size: var(--text-small); */
+    font-size: 0.8vw;
+    /* 아래는 박스 크기를 임의로 사용자가 수정할 수 있게 하는 건데, 그걸 막는 코드입니다. */
+    resize: none;
+    position: relative; /* z-index가 작동하려면 position 필요 */
+    z-index: var(--z-base);
+}
+
+.search::placeholder {
+    color: #aaa;
+    margin-top: 0;
+    background: transparent;
+    border: none;
+}
+
+.search:focus {
+    outline: none;
+}
+
+.searchfile1 {
+    margin-left: 2vw;
+}
+
+.category {
+    display: inline-flex;
+    /* width: 45.3vw; */
+}
+
+.filenameBox {
+    margin-top: 1.2vw;
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    margin-right: 0.01vw;
+    border: none;
+    background: none;
+    color: #C5C4D5;
+    border-top-left-radius: .5vw;
+    border-top-right-radius: .5vw;
+    box-shadow: 0 0 0.2vw var(--purpleB);
+}
+
+.filename {
+    font-size: var(--text-semi-small);
+    border-top-left-radius: .5vw;
+    border-top-right-radius: .5vw;
+    /* box-shadow: 0 0 0.2vw var(--purpleMain); */
+    width: 15vw;
+    padding-top: 1vw;
+    height: 2.3vw;
+    text-align: center;
+}
+
+/* JS로 제어 */
+.filenameBox.active {
+    box-shadow: 0 0 0.2vw var(--purpleMain);
+    color: var(--purpleMain);
+}
+
+.filenameBox.active .nothing {
+    opacity: 1;
+    z-index: var(--z-base);
+}
+
+.nothing {
+    position: absolute;
+    display: inline-flex;
+    top: 9vw;
+    /* margin-right: 0.1vw; */
+    /* left: 2vw; */
+    width: 15vw;
+    height: 1.5vw;
+    background-color: var(--background);
+    z-index: var(--z-base);
+    /* display: none; */
+    opacity: 0;
+}
+
+.filter {
+    position: absolute;
+    margin-top: 2vw;
+    right: 3.5vw;
+    border: none;
+    background: none;
+}
+
+.filterIcon {
+    width: 1.2vw;
+}
+
+
+.fileBox {
+    position: relative;
+    /* display: inline-flex; */
+    width: 89vw;
+    height: fit-content;
+    min-height: 45vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    margin-top: -.5vw;
+    padding: 1.3vw 1vw 1vw 1vw;
+    background-color: #ffffff;
+    border-top-right-radius: 1vw;
+    box-shadow: 0 0vw 0.2vw var(--purpleMain);
+    z-index: var(--z-content);
+}
+
+.searchImgBox {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13.6vw, 1fr));
+    gap: 1vw;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.searchImgCard {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1vw;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+    box-shadow: var(--shadow-sm);
+    background: white;
+    will-change: transform; /* GPU 가속 최적화 */
+}
+
+.searchImgCard:hover {
+    transform: translateY(-0.3vw) scale(1.02);
+    z-index: var(--z-dropdown);
+    box-shadow: var(--shadow-lg);
+}
+
+.searchImg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 1vw;
+}
+
+/* 카드 내부 오버레이 및 버튼 */
+.searchImgCard:hover .imgOverlay {
+    opacity: 1;
+}
+
+.imgOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1vw;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.img-btn {
+    position: relative;
+    border: none;
+    background: var(--purpleB);
+    width: 3vw;
+    height: 3vw;
+    border-radius: 2vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.img-btn:hover {
+    background: var(--purpleMain);
+    transform: scale(1.1);
+}
+
+.img-btn img {
+    width: 1.1vw;
+    height: auto;
+}
+
+.shareBtn {
+    /* 왼쪽 버튼 */
+}
+
+.downBtn {
+    /* 오른쪽 버튼 */
+}
+
+.downIcon {
+    width: 1.1vw;
+    height: auto;
+}
+
+.shareIcon {
+    width: 1.1vw;
+    height: auto;
+}
+
+
+
+
+/* 서칭탭 - 클릭 후 디테일 페이지 */
+.fileBox_detail {
+    display: inline-flex;
+}
+
+.searchfile {
+    margin-left: 2vw;
+}
+
+.searchDetail {
+    width: 40vw;
+    height: 41.5vw;
+    /* height: 20vw; */
+    border: 0.1vw solid var(--purpleB);
+    border-radius: 1vw;
+    padding: 1vw;
+    margin-right: 1vw;
+    background: var(--purpleA);
+    display: inline-flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.searchImgBox_detail {
+    width: 45.5vw;
+    height: fit-content;
+    columns: 3;
+    column-gap: 1vw;
+}
+
+.searchImgBox_detail img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 1vw;
+    break-inside: avoid;
+    border-radius: 1vw;
+}
+
+
+
+
+
+
+
+
+.sec1 {
+    width: 20vw;
+    height: 41.5vw;
+    background: content-box;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: .5vw;
+    background: var(--background);
+}
+
+.selectImg {
+    width: 20vw;
+}
+
+.sec2wrap {
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: flex-start;
+    width: 19vw;
+    margin-left: 1vw;
+    height: 41.5vw;
+}
+
+.sec2 {
+    display: inline-flex;
+    justify-content: space-between;
+    width: 19vw;
+}
+
+.save {
+    border: none;
+    background: var(--purpleB);
+    border-radius: .5vw;
+    width: 3.5vw;
+    height: 2.5vw;
+    font-size: var(--text-semi-small);
+    font-weight: 700;
+    color: var(--purpleMain);
+}
+
+.sec2_1 {
+    display: inline-flex;
+    align-items: center;
+    max-height: 2.5vw;
+}
+
+.sec2_1 button {
+    background: none;
+    border: none;
+    width: 2vw;
+}
+
+.sec2_1 img {
+    width: 1.1vw;
+    margin: 0 .5vw;
+}
+
+
+
+.d_plus img {
+    width: 1.3vw;
+}
+
+.D_settings-box {
+    position: absolute;
+    bottom: auto;
+    top: 1vw;
+    left: 43vw;
+    display: none;
+    /* 기본적으로 숨김 */
+    padding: 1vw 35vw 47vw 0vw;
+}
+
+.D_settings-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    width: 11vw;
+    background: var(--purpleB);
+    /* border: 1px solid #ddd; */
+    padding: 0.4vw;
+    border-radius: 0.5vw;
+    box-shadow: 0 0.5vw 1vw rgba(0, 0, 0, 0.1);
+    z-index: var(--z-dropdown);
+    color: var(--purpleMain);
+}
+
+.D_settings-box li {
+    padding: 0.8vw 1.1vw;
+    font-size: 0.9vw;
+    cursor: pointer;
+    font-size: var(--text-semi-small);
+    font-weight: 500;
+}
+
+.D_settings-box li:hover {
+    background: var(--purpleMain);
+    color: var(--background);
+    border-radius: .5vw;
+}
+
+/* JavaScript가 이 클래스를 추가하면 보이게 됩니다. */
+.D_settings-box.show {
+    display: block;
+}
+
+
+
+.sec3,
+.sec4 {
+    width: 19vw;
+    background: var(--background);
+    border-radius: .5vw;
+    padding: 1.5vw;
+    margin-top: 1vw;
+}
+
+.sec3 {
+    min-height: 14vw;
+}
+
+.sec4 {
+    min-height: 17vw;
+}
+
+.sec_h1 {
+    font-size: var(--text-semi-small);
+    font-weight: 700;
+}
+
+.sec_p1 {
+    margin-top: 1.5vw;
+    font-size: var(--text-semi-small);
+    line-height: 1.4vw;
+}
+
+
+
+
+
+
+
+
+/* =========================================
+   Filter Tab Components
+   ========================================= 
+   필터 페이지(filter.html)의 주요 컴포넌트 스타일
+   
+   포함 컴포넌트:
+   - .filter_main: 필터 페이지 메인 컨테이너
+   - .filterWrap: 필터 설정 영역 래퍼
+   - .filterCategory: 필터 카테고리 섹션 (내 선호 정보, 내 필터, 현재 필터 저장)
+   - .filterBasic: 기본 필터 설정 섹션
+   - .colorSelect: 색상 선택 영역
+   - .colorPalette: 색상 팔레트 그리드
+   - .mySty_reflect: 내 스타일 반영 비율 슬라이더
+   - .keyword: 연관 키워드 입력 영역
+   
+   필터 옵션:
+   - 색상 선택: 검색에 포함할 색상 선택
+   - 내 스타일 반영: 사용자 선호 스타일 반영 비율 (0-100%)
+   - 연관 키워드: 검색에 사용할 키워드 추가
+   
+   사용 위치: filter.html
+*/
+
+.filter_main {
+    display: inline-flex;
+    width: 100%; /* .wrap이 이미 margin-left를 가지고 있으므로 100% 사용 */
+    position: relative; /* z-index를 위한 position */
+    z-index: var(--z-content);
+    box-sizing: border-box;
+}
+
+.filterH1 {
+    color: var(--purpleMain);
+    font-size: var(--text-medium);
+    /* 기존 1.5rem → 약 1.05vw */
+    font-weight: 600;
+    text-align: center;
+    margin: 1.5vw;
+    /* 기존 25vw → 투톤 보정 */
+}
+
+.filterWrap {
+    width: 87.5vw;
+    height: 44vw;
+    margin: 1vw auto;
+    padding: 2vw;
+    background: var(--background);
+    box-shadow: 0 0 0.2vw var(--purpleMain);
+    border-radius: 1vw;
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.filterBasic {
+    display: block;
+    /* opacity: 1;
+    visibility: visible; */
+}
+
+.filterBasic_wrap {
+    margin-top: 2vw;
+    display: flex;
+    justify-content: center;
+    /* height: 30vw;
+    align-items: center; */
+}
+
+
+.favoriteF,
+.myF,
+.saveF {
+    display: none;
+}
+
+.fC.active-btn {
+    background: #726ee1;
+    /* 활성화된 버튼의 배경색 */
+    color: white;
+    /* 활성화된 버튼의 글자색 */
+}
+
+.filterBasic.active-section,
+.favoriteF.active-section,
+.myF.active-section,
+.saveF.active-section {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 버튼 감싸는 영역 */
+.fC_BtnWrap {
+    display: flex;
+    gap: 1vw;
+    justify-content: center;
+    margin-bottom: 1vw;
+}
+
+.fC {
+    background: var(--purpleA);
+    border: none;
+    border-radius: 2vw;
+    padding: .6vw 2.2vw;
+    /* 0.8vw 1.8vw → 약간 비율 맞춤 */
+    color: var(--purpleMain);
+    cursor: pointer;
+    font-size: var(--text-semi-small);
+    font-weight: 500;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+}
+
+.fC:hover {
+    background: var(--purpleMain);
+    color: var(--background);
+}
+
+.fC.active-btn {
+    background: #726ee1;
+    /* 활성화된 버튼의 배경색 */
+    color: white;
+}
+
+.finishFBtn {
+    position: absolute;
+    bottom: 5vw;
+    left: 44vw;
+}
+
+/* 색상 선택 영역 */
+.colorSelect {
+    margin: 0 2vw;
+}
+
+.filterp {
+    font-size: var(--text-semi-small);
+    /* 1.1rem → 약 0.77vw */
+    font-weight: 600;
+    margin-bottom: 1vw;
+    /* 10px → 0.7vw */
+    color: var(--purpleMain);
+}
+
+/* 색상 팔레트 그리드 */
+.colorPalette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5vw;
+    /* 0.8vw 유지 */
+    max-width: 10vw;
+    /* 16vw → 11.2vw (비율 조정) */
+}
+
+.colorPalette span {
+    width: 1.5vw;
+    /* 1.6vw → 1.12vw (약간 줄임) */
+    height: 1.5vw;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 0.1vw solid var(--Gray);
+    /* 0.1vw 유지 */
+    transition: border-color 0.3s ease;
+}
+
+.colorP1 {
+    background: #000000;
+}
+
+.colorP2 {
+    background: #666666;
+}
+
+.colorP3 {
+    background: #FFFFFF;
+    border: 1px solid #ccc;
+}
+
+.colorP4 {
+    background: #ee3c3c;
+}
+
+.colorP5 {
+    background: #e4762c;
+}
+
+.colorP6 {
+    background: #f3d557;
+}
+
+.colorP7 {
+    background: #82b54b;
+}
+
+.colorP8 {
+    background: #3b76d1;
+}
+
+.colorP9 {
+    background: #000080;
+}
+
+.colorP10 {
+    background: #540f7f;
+}
+
+.colorP11 {
+    background: #ed8cad;
+}
+
+.colorP12 {
+    background: #6b4c4f;
+}
+
+
+/* 선택된 색상 테두리 표시 */
+.colorPalette span.selected {
+    border: var(--purpleMain);
+}
+
+/* 자세히 보기 버튼 */
+.colorP_moreBtn {
+    margin: 1.5vw 2.5vw;
+    /* 0.8vw → 0.56vw */
+    display: inline-block;
+    padding: 0.42vw 0.98vw;
+    /* 0.6vw 1.4vw */
+    background: var(--purpleA);
+    color: var(--purpleMain);
+    border-radius: 0.5vw;
+    /* 1vw → 0.7vw */
+    font-size: var(--text-tiny);
+    /* 0.9rem → 0.63vw */
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease;
+}
+
+.colorP_moreBtn:hover {
+    background: var(--purpleMain);
+    color: var(--background);
+}
+
+/* 내 스타일 반영 섹션 */
+/* .mySty_reflect {
+    margin: 0 2vw;
+} */
+
+.mySty_reflect .filterp {
+    margin-bottom: 2vw;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 0.84vw;
+    /* 12px → 0.84vw */
+    /* max-width: 21vw; */
+    /* 300px → 21vw */
+    width: 18vw;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 18vw;
+    height: 0.42vw;
+    /* 6px → 0.42vw */
+    border-radius: 0.21vw;
+    /* 3px → 0.21vw */
+    background: #ddd;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1vw;
+    /* 20px → 1.4vw */
+    height: 1vw;
+    background: var(--purpleMain);
+    cursor: pointer;
+    border-radius: 50%;
+    margin-top: 0vw;
+    /* -7px → -0.49vw */
+    border: none;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+    width: 1.1vw;
+    height: 1.1vw;
+    background: var(--purpleMain);
+}
+
+.percent-label {
+    font-size: var(--text-tiny);
+    /* 0.9rem → 0.63vw */
+    color: #9999b8;
+    width: 2.8vw;
+    /* 40px → 2.8vw */
+    text-align: left;
+    user-select: none;
+}
+
+/* 연관 키워드 섹션 */
+.keyword {
+    max-width: 21vw;
+    margin: 0 2vw;
+}
+
+.keyword .filterp {
+    margin-bottom: 0.42vw;
+    /* 6px → 0.42vw */
+}
+
+.keywordAdd {
+    display: flex;
+    gap: 0.7vw;
+    /* 10px → 0.7vw */
+}
+
+.keywordAdd input {
+    flex-grow: 1;
+    height: 1.5vw;
+    width: 5vw;
+    /* 32px → 2.93vw */
+    font-size: 0.97vw;
+    /* 14px → 0.97vw */
+    padding: 0.35vw 0.2vw;
+    /* 5px 10px → vw */
+    margin: .5vw 0;
+    border: 0.07vw solid #ddd;
+    /* 1px → 0.07vw */
+    border-radius: 0.28vw;
+    /* 4px → 0.28vw */
+    color: #555;
+}
+
+.keywordAdd input:focus {
+    outline: none;
+}
+
+.keywordAdd button {
+    width: 1.62vw;
+    /* 36px → 2.62vw */
+    height: 1.62vw;
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.3vw;
+    /* 24px → 1.75vw */
+    color: #999;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    margin-top: .8vw;
+}
+
+.keywordAdd button:hover {
+    background: var(--purpleMain);
+    color: white;
+}
+
+/* 키워드 리스트 */
+#keywordItems {
+    margin-top: 0.7vw;
+    /* 10px → 0.7vw */
+    list-style: none;
+    color: var(--purpleMain);
+    font-size: 1vw;
+    /* 16px 가량으로 살짝 키웠습니다. */
+    max-width: 21vw;
+}
+
+#keywordItems li {
+    margin-bottom: 0.28vw;
+    /* 4px → 0.28vw */
+}
+
+
+
+.favoriteF {
+    margin-top: 1vw;
+    padding: 1vw;
+    background-color: #f5f6ff;
+    border-radius: 1vw;
+    height: 15.1vw;
+}
+
+.favP1 {
+    display: flex;
+    justify-content: center;
+    color: var(--purpleMain);
+    font-size: var(--text-semi-medium);
+    font-weight: 500;
+    margin: 1vw 0 1vw 0;
+}
+
+.favP2 {
+    color: var(--purpleMain);
+    font-size: var(--text-small);
+    font-weight: 500;
+    margin: .5vw 1vw .5vw .7vw;
+}
+
+.favP3 {
+    color: var(--purpleGy2);
+    font-size: var(--text-semi-small);
+    font-weight: 400;
+    margin: 0vw 1vw 1vw .7vw;
+}
+
+.favP4 {
+    color: var(--purpleMain);
+    font-size: var(--text-small);
+    font-weight: 400;
+    margin: 0 2vw;
+}
+
+.fav-images {
+    display: flex;
+    justify-content: space-between;
+    gap: 1vw;
+}
+
+.fav-item {
+    background-color: white;
+    border-radius: 1vw;
+    padding: 1vw;
+    width: 40vw;
+    height: fit-content;
+    min-height: 12vw;
+    box-sizing: border-box;
+    text-align: left;
+    color: #726ee1;
+    font-weight: 600;
+    font-size: 1vw;
+    line-height: 1.3;
+}
+
+.fav-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.6vw;
+    margin-bottom: 0.6vw;
+}
+
+
+
+.filter-container {
+    background: #f9f7ff;
+    border-radius: 1.5rem;
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 탭 버튼 섹션 */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.tab {
+    padding: 0.8rem 1.6rem;
+    border-radius: 1.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: #eeeafc;
+    color: #726ee1;
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background: #726ee1;
+    color: white;
+}
+
+/* 필터 리스트 영역 */
+.filter-list {
+    background: #F8F8FD;
+    border-radius: 1vw;
+    padding: 1vw 2vw;
+    display: flex;
+    flex-direction: column;
+    gap: .5vw;
+    max-height: 18vw;
+    overflow-y: auto;
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: .5vw;
+    border-radius: 1vw;
+    /* padding: 1vw 2vw; */
+    font-size: 0.9rem;
+    color: #726ee1;
+    white-space: nowrap;
+    justify-content: flex-start
+}
+
+.filter-item .colors {
+    display: flex;
+    gap: 0.5vw;
+    width: 18vw;
+    align-items: center;
+}
+
+.filter-item .color-dot {
+    width: 1.5vw;
+    height: 1.5vw;
+    border-radius: 3vw;
+}
+
+.filter_leftSide {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 62vw;
+    border-radius: 1vw;
+    padding: 1.3vw 2vw;
+    background: var(--background);
+}
+
+/* 다양한 색상 예시 */
+.color-dark {
+    background: #555;
+}
+
+.color-brown {
+    background: #663300;
+}
+
+.color-yellow {
+    background: #FFCF0F;
+}
+
+.color-red {
+    background: #FF0000;
+}
+
+.color-orange {
+    background: #FF7500;
+}
+
+.color-blue {
+    background: #3E6BFF;
+}
+
+.color-pink {
+    background: #EA8AAD;
+}
+
+.color-green {
+    background: #2DCC70;
+}
+
+.color-purple {
+    background: #51489C;
+}
+
+.favP4 span {
+    padding: 0.5vw 1.2vw;
+    background: var(--background);
+    border-radius: 2vw;
+    /* font-size: 0.8vw; */
+    color: var(--purpleGy2);
+    border: 0.1vw solid var(--purpleGy);
+    margin-left: .5vw;
+}
+
+.myFH1{
+    font-size: var(--text-semi-medium);
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    margin: .5vw 0;
+}
+
+.myFp1 {
+    width: 12vw;
+}
+
+.myFp2 {
+    width: 30vw;
+}
+
+.myFp3 {
+    color: var(--purpleMain);
+    font-size: var(--text-small);
+    font-weight: 400;
+    margin-right: 1.5vw;
+}
+
+/* 버튼 스타일 */
+.btn-load,
+.btn-delete {
+    cursor: pointer;
+    font-size: var(--text-small);
+    padding: 1.5vw 3vw;
+    border-radius: 1vw;
+    border: none;
+    background: var(--background);
+    color: var(--purpleMain);
+    /* border: 0.1vw solid var(--purpleGy); */
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-load:hover {
+    background-color: var(--purpleMain);
+    color: var(--background);
+}
+
+.btn-delete {
+    padding: 1.5vw 0;
+    background-color: #fff;
+    width: 4vw;
+    height: 4vw;
+    font-size: 1.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-delete:hover {
+    background-color: var(--purpleMain);
+    color: white;
+}
+
+.btn-delete:hover,
+.deleteIcon {
+    content: 'url(./img/delete_white)';
+}
+
+.deleteIcon {
+    width: 1.5vw;
+}
+
+/* 하단 인터렉티브 영역 */
+.interactive-area {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 2rem;
+}
+
+.colors-select {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.color-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-circle.selected {
+    border-color: #726ee1;
+}
+/* 
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 5px;
+    -webkit-appearance: none;
+    background: #eeeafc;
+} */
+
+
+
+.keywords-input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 0.3rem 0.8rem;
+    margin-right: 0.4rem;
+}
+
+.btn-add-keyword {
+    background: #726ee1;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+/* 모달 스타일 간단 예시 */
+/* .modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+} */
+.modal-background {
+    position: absolute;
+    top: 16vw;
+    left: 4vw;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.437);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-overlay);
+    width: 88vw;
+    height: 18.2vw;
+}
+.modal {
+    /* position: fixed; */
+    position: relative;
+    /* margin-top: -5vw; */
+    width: 74vw;
+    background: var(--purpleA);
+    border-radius: 1vw;
+    padding: 2vw 3vw;
+    text-align: center;
+    /* width: 320px; */
+    font-size: var(--text-semi-medium);
+    font-weight: 500;
+}
+
+.modal button {
+    margin: 1rem 0.5rem 0 0.5rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.deleteModalP{
+    color: var(--purpleMain);
+}
+
+.btn-yes, .btn-no {
+    background-color: var(--background);
+    color: var(--purpleMain);
+}
+
+.btn-yes:hover, .btn-no:hover {
+    background-color: var(--purpleMain);
+    color: var(--background);
+}
+
+.filterDelete{
+    justify-content: center;
+    margin: 2vw 0 .5vw 0 ;
+}
+
+/* =========================================
+   Responsive Design & Robustness
+   ========================================= 
+   반응형 디자인 및 접근성 개선
+   
+   목적: 다양한 화면 크기와 디바이스에서 최적의 사용자 경험 제공
+   
+   포함 미디어 쿼리:
+   - Tablet (768px - 1024px): 태블릿 화면 최적화
+   - Mobile (max-width: 768px): 모바일 화면 최적화
+   
+   주요 조정 사항:
+   - 사이드바 너비 및 위치 조정
+   - 그리드 레이아웃 컬럼 수 조정
+   - 터치 타겟 크기 최적화 (최소 44px)
+   - 폰트 크기 및 간격 조정
+   - 모달 크기 및 위치 조정
+   
+   접근성:
+   - 키보드 포커스 표시 개선
+   - 스크린 리더 전용 콘텐츠 (.sr-only)
+   - 최소 터치 타겟 크기 보장
+*/
+
+/* Tablet Support (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .wrap { margin-left: 0; }
+    
+    /* Sidebar: Compact but still visible */
+    .sidebar { 
+        width: 5vw; 
+        padding: 1vw 0;
+    }
+    
+    .sidebar img, .mypageIcon {
+        width: 2vw;
+    }
+    
+    /* Main Content Adjustments */
+    .Report_main, .Report { 
+        width: 95vw; 
+        padding: 3vw 2.5vw 8vw 2.5vw; 
+        box-sizing: border-box; 
+    }
+    
+    /* Consistent Layout Width */
+    .H1Text,
+    .main_percent,
+    .overall-analysis-section {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    /* Data Boxes: 2-column grid */
+    .dataBox_wrap { 
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5vw;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .dataBox { 
+        width: 100%; 
+        margin: 0;
+        min-width: 0; /* Grid에서 자동 크기 조정 */
+    }
+    
+    .aiSuggestion {
+        width: 100%;
+        grid-column: 1 / -1; /* Full width */
+    }
+    
+    /* Analysis Page Adjustments */
+    .analyze_prompt_box { 
+        width: 90vw; 
+        left: 5vw; 
+        bottom: 4vh; 
+        margin-left: 0;
+    }
+    
+    .analyze_prompt { 
+        width: 100%; 
+        padding: 1.2vw 0 0.4vw 1.5vw;
+    }
+    
+    .analyze_send_btn { 
+        right: 1.5vw; 
+        width: 2.5vw;
+        height: 2.5vw;
+    }
+    
+    /* Chat Container */
+    .chat-container {
+        max-height: 60vh;
+        padding: 1.2vw;
+    }
+    
+    /* Touch Target Optimization */
+    button, .sug_li, .dataBox {
+        min-height: 44px; /* iOS 권장 터치 타겟 */
+    }
+    
+    /* Modal Adjustments */
+    .modal_box {
+        width: 70vw;
+        max-width: 600px;
+    }
+    
+    .search_result_modal_box {
+        width: 75vw;
+        max-width: 800px;
+    }
+}
+
+/* Mobile Support (max-width: 768px) */
+@media (max-width: 768px) {
+    .wrap { 
+        margin-left: 0; 
+        width: 100%; /* 모바일에서는 전체 너비 */
+    }
+    
+    /* Navigation Bottom Bar Style */
+    .sidebar { 
+        width: 100%; 
+        height: auto; 
+        bottom: 0; 
+        top: auto; 
+        flex-direction: row; 
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        z-index: var(--z-nav);
+    }
+    
+    .nav_ul { flex-direction: row; gap: 20px; margin: 0; }
+    .nav_ul3 { margin-top: 0; padding-bottom: 0; }
+    .logo_ul { display: none; } 
+    
+    /* 모든 main 요소에 모바일 패딩 적용 */
+    .Report_main, .Report,
+    .search_main,
+    .mypage_main,
+    .settings_main,
+    .subscribe_main,
+    .index_main,
+    .filter_main { 
+        width: 100vw; 
+        padding: 20px 5vw 100px 5vw; /* 하단 네비게이션을 위한 padding-bottom */
+        margin-left: 0; /* 모바일에서는 margin 제거 */
+        box-sizing: border-box; 
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Consistent Layout Width for Mobile */
+    .H1Text,
+    .main_percent,
+    .overall-analysis-section,
+    .dataBox_wrap {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    /* Analysis Page Adjustments */
+    .analyze_prompt_box { 
+        width: 90vw; 
+        left: 5vw; 
+        bottom: 80px; 
+        margin-left: 0;
+    }
+    .analyze_prompt { width: 100%; position: relative; }
+    .analyze_send_btn { right: 10px; position: absolute; }
+    
+    .dataBox_wrap { 
+        display: flex; 
+        flex-direction: column; 
+        width: 100%; 
+    }
+    
+    .dataBox, .aiSuggestion { 
+        width: 100%; 
+        height: auto; 
+        min-height: 150px; 
+        margin: 10px 0; 
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    .main_percent { 
+        width: 100%; 
+        height: 40px; 
+        margin-left: 0; 
+        margin-right: 0;
+    }
+    .main_percent .per, .per2, .per3, .per4 { height: 40px; }
+    
+    .add_prompt { width: 100%; padding-bottom: 80px; }
+}
+
+/* Empty State & Error UI */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--purpleGy2);
+    width: 100%;
+    min-height: 300px;
+    background: var(--background);
+    border-radius: 2vw;
+    border: 0.1vw solid var(--purpleB);
+}
+
+/* Error Type Variants */
+.empty-state-network {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+}
+
+.empty-state-notfound {
+    border-color: #6366f1;
+    background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
+}
+
+.empty-state-timeout {
+    border-color: #f97316;
+    background: linear-gradient(135deg, #fed7aa 0%, #ffffff 100%);
+}
+
+.empty-state-server {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+}
+
+.empty-state-unknown {
+    border-color: var(--purpleGy2);
+    background: var(--background);
+}
+
+.empty-state-icon {
+    width: 6vw;
+    height: 6vw;
+    margin-bottom: 1.5vw;
+    opacity: 0.6;
+    background-color: var(--purpleGy);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5vw;
+    color: var(--purpleMain);
+}
+
+/* Error Type Icons */
+.empty-state-icon-network::before {
+    content: "📡";
+    font-size: 2.5vw;
+}
+
+.empty-state-icon-notfound::before {
+    content: "🔍";
+    font-size: 2.5vw;
+}
+
+.empty-state-icon-timeout::before {
+    content: "⏱";
+    font-size: 2.5vw;
+}
+
+.empty-state-icon-server::before {
+    content: "⚠";
+    font-size: 2.5vw;
+}
+
+.empty-state-icon-error::before {
+    content: "❌";
+    font-size: 2.5vw;
+}
+
+.empty-state-title {
+    font-size: var(--text-medium);
+    font-weight: 600;
+    color: var(--purpleC);
+    margin-bottom: 0.5vw;
+}
+
+.empty-state-desc {
+    font-size: var(--text-small);
+    max-width: 400px;
+    margin-bottom: 2vw;
+    line-height: var(--line-height-base);
+}
+
+.empty-state-detail {
+    font-size: 0.8em;
+    color: #aaa;
+    display: block;
+    margin-top: 0.5vw;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+.btn-retry {
+    padding: 0.8vw 2vw;
+    background: var(--purpleMain);
+    color: white;
+    border: none;
+    border-radius: 2vw;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: var(--text-small);
+    transition: transform 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth);
+}
+
+.btn-retry:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+/* =========================================
+   Skeleton UI System
+   ========================================= 
+   스켈레톤 로딩 UI 시스템
+   
+   목적: 콘텐츠 로딩 중 사용자에게 로딩 상태를 시각적으로 표시
+   
+   포함 컴포넌트:
+   - .skeleton: 기본 스켈레톤 클래스 (shimmer 애니메이션)
+   - .skeleton-text: 텍스트 스켈레톤 (다양한 크기 변형)
+   - .skeleton-box: 박스 스켈레톤 (sm, md, lg 변형)
+   - .skeleton-tag: 태그/퍼센트 스켈레톤
+   - .skeleton-circle: 원형 스켈레톤
+   
+   애니메이션:
+   - shimmer: 좌우로 이동하는 그라데이션 효과
+   - GPU 가속 최적화 (will-change, contain 속성 사용)
+   
+   사용 위치: analyze.html (분석 결과 로딩 중)
+*/
+
+/* Base Skeleton Animation */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Base Skeleton Class */
+.skeleton {
+    background: #f0f0f7;
+    background-image: linear-gradient(90deg, #f0f0f7 0%, #f8f8fc 50%, #f0f0f7 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+    color: transparent !important;
+    pointer-events: none;
+    will-change: background-position; /* GPU 가속 */
+    contain: layout style paint; /* 성능 최적화: 렌더링 격리 */
+}
+
+/* Skeleton Text Variants */
+.skeleton-text {
+    height: 1.2em;
+    margin-bottom: 0.5em;
+    display: inline-block;
+}
+
+.skeleton-text-header {
+    width: 60%;
+    height: 1.5em;
+    margin-bottom: 1vw;
+}
+
+.skeleton-text-desc {
+    width: 90%;
+    height: 1em;
+}
+
+.skeleton-text-sm {
+    width: 40%;
+    height: 1em;
+}
+
+.skeleton-text-md {
+    width: 60%;
+    height: 1.2em;
+}
+
+.skeleton-text-lg {
+    width: 80%;
+    height: 1.4em;
+}
+
+/* Skeleton Box Variants */
+.skeleton-box {
+    width: 100%;
+    height: 100%;
+    min-height: 50px;
+    display: block;
+}
+
+.skeleton-box-sm {
+    height: 3vw;
+    min-height: 40px;
+}
+
+.skeleton-box-md {
+    height: 6vw;
+    min-height: 80px;
+}
+
+.skeleton-box-lg {
+    height: 10vw;
+    min-height: 120px;
+}
+
+/* Skeleton Tag/Percent Variants */
+.skeleton-tag {
+    height: 4vw;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.skeleton-tag-per1 {
+    width: 50%;
+}
+
+.skeleton-tag-per2 {
+    width: 25%;
+}
+
+.skeleton-tag-per3 {
+    width: 15%;
+}
+
+.skeleton-tag-per4 {
+    width: 10%;
+}
+
+/* Skeleton Circle */
+.skeleton-circle {
+    border-radius: 50%;
+    width: 6vw;
+    height: 6vw;
+    min-width: 48px;
+    min-height: 48px;
+}
+
+/* Custom Scrollbar (Refined) */
+::-webkit-scrollbar {
+    width: 0.5vw;
+    height: 0.5vw;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--purpleGy);
+    border-radius: 0.25vw;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--purpleGy2);
+}
+
+/* =========================================
+   Accessibility (A11y) Utilities
+   ========================================= */
+
+/* Focus Management for Accessibility */
+:focus-visible {
+    outline: 3px solid var(--purpleMain);
+    outline-offset: 3px;
+    border-radius: 0.2rem;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Skip to Main Content Link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--purpleMain);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    z-index: var(--z-tooltip); /* 접근성 링크는 최상위에 */
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Enhanced Focus Styles for Interactive Elements */
+button:focus-visible,
+.dataBox:focus-visible,
+.sug_li:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+    outline: 3px solid var(--purpleMain);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 1px var(--purpleF);
+}
+
+/* Keyboard Navigation: Tab Order Visual Indicator */
+*:focus-visible {
+    outline-color: var(--purpleMain);
+    outline-width: 3px;
+    outline-style: solid;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :focus-visible {
+        outline-width: 4px;
+        outline-color: #000000;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

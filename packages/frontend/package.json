@@ -1,0 +1,10 @@
+{
+  "name": "@dysapp/frontend",
+  "version": "1.0.0",
+  "description": "Dysapp Frontend - AI Design Analysis Platform",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Use VS Code Live Server extension to serve this directory'",
+    "info": "echo 'Frontend runs on VS Code Live Server. Open packages/frontend/index.html'"
+  }
+}
