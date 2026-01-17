@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Design uploads: allow read for authenticated users
+    // Signed URLs from Cloud Functions can access these files
+    match /design-uploads/{userId}/{fileName} {
+      // Allow read if user is authenticated OR if accessed via signed URL
+      // Signed URLs bypass Storage rules, so we allow authenticated reads
+      allow read: if isAuthenticated();
+      
+      // Allow write only by authenticated users (Cloud Functions use service account)
+      // but restrict file size and type
+      allow write: if isAuthenticated() 
+                   && request.resource.size < 10 * 1024 * 1024 // 10MB limit
+                   && request.resource.contentType.matches('image/.*');
+    }
+    
+    // Public reference designs (read-only for authenticated users)
+    match /reference-designs/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin can write
+    }
+    
+    // Deny all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

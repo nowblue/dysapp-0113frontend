@@ -1,0 +1,11 @@
+{
+  "name": "@dysapp/backend",
+  "version": "1.0.0",
+  "description": "Dysapp Backend - Firebase Cloud Functions",
+  "private": true,
+  "scripts": {
+    "build": "cd functions && npm run build",
+    "serve": "cd functions && npm run serve",
+    "deploy": "firebase deploy --only functions"
+  }
+}
